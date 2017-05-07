@@ -4,7 +4,7 @@
     "description": "The name of the application"
   },
   "appDescription": {
-    "message": "This WebExtension translates the current page with Google Translate. It does so on demand so it does not change the page unless the user selected this. It is fast, light and privacy friendly.",
+    "message": "This WebExtension translates the current page with Google Translate. It does so on demand so it does not change the page unless the user selected this. It is fast, light and privacy friendly. You can call the translation with Shift+Alt+P!",
     "description": "The description of the application"
   }
 }
