@@ -17,6 +17,7 @@
 	},
 	"permissions": [
 		"tabs",
+    "contextMenus",
     "http://*/*",
     "*://translate.google.com/*",
     "*://www.gstatic.com/images/branding/*",

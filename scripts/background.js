@@ -27,4 +27,16 @@ chrome.commands.onCommand.addListener(function(action) {
   }
 });
 
+browser.contextMenus.onClicked.addListener(function(info, tab) {
+  if (info.menuItemId == "translate-current-page") {
+    translateCurrentPage();
+  }
+});
+
 browser.browserAction.onClicked.addListener(translateCurrentPage);
+
+chrome.contextMenus.create({
+  id: "translate-current-page",
+  title: "Translate Current Page",
+  contexts: ["all"]
+});
