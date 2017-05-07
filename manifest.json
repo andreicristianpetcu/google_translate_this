@@ -15,24 +15,12 @@
 	},
 	"permissions": [
 		"tabs",
+    "https://translate.google.com/*",
+    "https://translate.google.com/*",
+    "https://www.gstatic.com/images/branding/*",
+    "https://www.google.com/images/*",
 		"http://*/*",
-		"https://*/*",
-		"background",
-		"contentSettings",
-		"storage"
-	],
-	"content_scripts": [
-		{
-			"matches": [
-				"http://*/*",
-				"https://*/*"
-			],
-			"js": [
-				"scripts/contentscript.js"
-			],
-			"run_at": "document_end",
-			"all_frames": false
-		}
+		"https://*/*"
 	],
 	"browser_action": {
 		"default_icon": {
