@@ -3,7 +3,6 @@ gtdiv.setAttribute("id", "google_translate_element");
 document.body.appendChild(gtdiv);
 
 var googleTranslateElementInitCode = "function(){ \
-  console.log(\"calling googleTranslateElementIniu from source\"); \
   new google.translate.TranslateElement({layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element'); \
 }";
 

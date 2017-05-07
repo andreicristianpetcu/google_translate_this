@@ -15,18 +15,22 @@
 	},
 	"permissions": [
 		"tabs",
-    "https://translate.google.com/*",
-    "https://translate.google.com/*",
-    "https://www.gstatic.com/images/branding/*",
-    "https://www.google.com/images/*",
-		"http://*/*",
-		"https://*/*"
+    "http://*/*",
+    "*://translate.google.com/*",
+    "*://www.gstatic.com/images/branding/*",
+    "*://www.google.com/images/*"
 	],
 	"browser_action": {
+    "browser_style": true,
 		"default_icon": {
 			"19": "images/icon-19.png",
 			"38": "images/icon-38.png"
 		},
 		"default_title": "Google Translate This Page"
-	}
+	},
+  "applications": {
+    "gecko": {
+        "id": "{76399bf2-8354-4b11-bf43-6c863b195b1d}"
+    }
+  }
 }
