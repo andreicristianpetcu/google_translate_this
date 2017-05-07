@@ -19,6 +19,7 @@
 		"tabs",
     "contextMenus",
     "http://*/*",
+    "https://*/*",
     "*://translate.google.com/*",
     "*://www.gstatic.com/images/branding/*",
     "*://www.google.com/images/*"
