@@ -30,6 +30,14 @@
 		},
 		"default_title": "Google Translate This Page"
 	},
+  "commands": {
+    "translate-current-page": {
+      "suggested_key": {
+        "default": "Alt+Shift+P"
+      },
+      "description": "Translate Current Page"
+    }
+  },
   "applications": {
     "gecko": {
         "id": "{76399bf2-8354-4b11-bf43-6c863b195b1d}"

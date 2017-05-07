@@ -8,7 +8,7 @@ function onError(error) {
     console.log('Error: ' + error);
 }
 
-function translateCurrentTab() {
+function translateCurrentPage() {
     chrome.tabs.query({
         currentWindow: true,
         active: true
@@ -20,4 +20,11 @@ function translateCurrentTab() {
         executing.then(onExecuted, onError);
     });
 }
-browser.browserAction.onClicked.addListener(translateCurrentTab);
+
+chrome.commands.onCommand.addListener(function(action) {
+  if (action == "translate-current-page") {
+    translateCurrentPage();
+  }
+});
+
+browser.browserAction.onClicked.addListener(translateCurrentPage);
