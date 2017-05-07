@@ -1,9 +1,10 @@
 var gtdiv = document.createElement("div");
 gtdiv.setAttribute("id", "google_translate_element");
+gtdiv.style.display="none";
 document.body.appendChild(gtdiv);
 
 var googleTranslateElementInitCode = "function(){ \
-  new google.translate.TranslateElement({layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element'); \
+  new google.translate.TranslateElement({pageLanguage: 'auto', autoDisplay: true}, 'google_translate_element'); \
 }";
 
 var globalFunctionScript = document.createElement('script');
