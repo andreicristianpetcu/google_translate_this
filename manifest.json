@@ -21,10 +21,6 @@
 		"contentSettings",
 		"storage"
 	],
-	"options_ui": {
-		"page": "options.html",
-		"chrome_style": true
-	},
 	"content_scripts": [
 		{
 			"matches": [
@@ -43,6 +39,6 @@
 			"19": "images/icon-19.png",
 			"38": "images/icon-38.png"
 		},
-		"default_title": "Translate Page with Google WebExtension"
+		"default_title": "Google Translate This Page"
 	}
 }

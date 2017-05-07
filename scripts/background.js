@@ -1,2 +1,23 @@
-"use strict";function onExecuted(e){console.log("We made it green")}function onError(e){console.log("Error: "+e)}function handleClick(){chrome.tabs.query({currentWindow:!0,active:!0},function(e){var o=e[0].id;chrome.tabs.get(o,function(e){console.log("clicked browser action in tab "+o)});var n=browser.tabs.executeScript(o,{file:"inject_google_translate_content.js"});n.then(onExecuted,onError)})}chrome.runtime.onInstalled.addListener(function(e){console.log("previousVersion",e.previousVersion)});var makeItGreen='alert("test")';browser.browserAction.onClicked.addListener(handleClick),console.log("'Allo 'Allo! Event Page for Browser Action");
-//# sourceMappingURL=background.js.map
+'use strict';
+
+function onExecuted(result) {
+    console.log('We made it green');
+}
+
+function onError(error) {
+    console.log('Error: ' + error);
+}
+
+function translateCurrentTab() {
+    chrome.tabs.query({
+        currentWindow: true,
+        active: true
+    }, function (foundTabs) {
+        var currentTabId = foundTabs[0].id;
+        var executing = browser.tabs.executeScript(currentTabId, {
+            file: 'scripts/inject_google_translate_content.js'
+        });
+        executing.then(onExecuted, onError);
+    });
+}
+browser.browserAction.onClicked.addListener(translateCurrentTab);
