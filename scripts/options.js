@@ -1,0 +1,2 @@
+"use strict";console.log("'Allo 'Allo! Option");
+//# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNjcmlwdHMvb3B0aW9ucy5qcyJdLCJuYW1lcyI6WyJjb25zb2xlIiwibG9nIl0sIm1hcHBpbmdzIjoiQUFBQSxZQUVBQSxTQUFRQyxJQUFJIiwiZmlsZSI6InNjcmlwdHMvb3B0aW9ucy5qcyIsInNvdXJjZXNDb250ZW50IjpbIid1c2Ugc3RyaWN0JztcblxuY29uc29sZS5sb2coJ1xcJ0FsbG8gXFwnQWxsbyEgT3B0aW9uJyk7Il19
