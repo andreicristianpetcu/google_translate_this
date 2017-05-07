@@ -1,7 +1,7 @@
 {
 	"name": "__MSG_appName__",
 	"version": "1.0.0",
-  "homepage_url": "https://github.com/andreicristianpetcu/google_translate_this"
+  "homepage_url": "https://github.com/andreicristianpetcu/google_translate_this",
 	"manifest_version": 2,
 	"description": "__MSG_appDescription__",
 	"icons": {
@@ -17,10 +17,9 @@
 		]
 	},
 	"permissions": [
-		"tabs",
+    "tabs",
+		"activeTab",
     "contextMenus",
-    "http://*/*",
-    "https://*/*",
     "*://translate.google.com/*",
     "*://www.gstatic.com/images/branding/*",
     "*://www.google.com/images/*"
