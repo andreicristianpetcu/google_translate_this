@@ -40,3 +40,4 @@ chrome.contextMenus.create({
   title: "Translate Current Page",
   contexts: ["all"]
 });
+browser.pageAction.onClicked.addListener(translateCurrentPage);

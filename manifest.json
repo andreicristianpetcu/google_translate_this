@@ -23,14 +23,18 @@
     "*://translate.google.com/*",
     "*://www.gstatic.com/images/branding/*",
     "*://www.google.com/images/*"
-	],
+ ],
 	"browser_action": {
     "browser_style": true,
 		"default_icon": {
 			"19": "images/icon-19.png",
 			"38": "images/icon-38.png"
 		},
-		"default_title": "Google Translate This Page"
+   "default_title": "Google Translate This Page"
+  },
+	"page_action": {
+		"default_icon": "images/translate_icon.svg",
+    "browser_style": true
 	},
   "commands": {
     "translate-current-page": {
