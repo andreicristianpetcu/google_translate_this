@@ -1,6 +1,6 @@
 {
 	"name": "__MSG_appName__",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"homepage_url": "https://github.com/andreicristianpetcu/google_translate_this",
 	"manifest_version": 2,
 	"description": "__MSG_appDescription__",
@@ -42,7 +42,8 @@
   },
   "applications": {
     "gecko": {
-        "id": "{e34d5840-6b3b-49d8-92c2-9696798c4e2a}"
+      "id": "{e34d5840-6b3b-49d8-92c2-9696798c4e2a}",
+      "update_url": "https://raw.githubusercontent.com/andreicristianpetcu/google_translate_this/master/updates.json"
     }
   }
 }
