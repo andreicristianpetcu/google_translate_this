@@ -7,7 +7,9 @@
         { "version": "1.0.2",
           "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.0.2/google_translate_this_page-1.0.2-an.fx.xpi" },
         { "version": "1.0.3",
-          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.0.3/google_translate_this_page-1.0.3-an.fx.xpi" }
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.0.3/google_translate_this_page-1.0.3-an.fx.xpi" },
+        { "version": "1.2.0",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.0/google_translate_this_page-1.2.0-an.fx.xpi" }
       ]
     }
   }

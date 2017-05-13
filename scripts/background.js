@@ -1,5 +1,19 @@
 'use strict';
 
+const APPLICABLE_PROTOCOLS = ["http:", "https:"];
+
+function protocolIsApplicable(url) {
+  var anchor =  document.createElement('a');
+  anchor.href = url;
+  return APPLICABLE_PROTOCOLS.includes(anchor.protocol);
+}
+
+function showPageActionOnTab(tabInfo){
+  if (protocolIsApplicable(tabInfo.url)) {
+    browser.pageAction.show(tabInfo.id);
+  }
+}
+
 function translateCurrentPage() {
     chrome.tabs.query({
         currentWindow: true,
@@ -25,14 +39,20 @@ browser.contextMenus.onClicked.addListener(function(info, tab) {
 });
 
 browser.browserAction.onClicked.addListener(translateCurrentPage);
-
-chrome.contextMenus.create({
+browser.contextMenus.create({
   id: "translate-current-page",
   title: "Translate Current Page",
   contexts: ["all"]
 });
 browser.pageAction.onClicked.addListener(translateCurrentPage);
 
-browser.tabs.onActivated.addListener(function(tabInfo){
-  browser.pageAction.show(tabInfo.tabId);
+browser.tabs.query({}).then((tabs) => {
+  var tab;
+  for (tab of tabs) {
+    showPageActionOnTab(tab);
+  }
+});
+
+browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
+  showPageActionOnTab(tab);
 });
