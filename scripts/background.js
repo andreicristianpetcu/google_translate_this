@@ -1,13 +1,5 @@
 'use strict';
 
-function onExecuted(result) {
-    console.log('We made it green');
-}
-
-function onError(error) {
-    console.log('Error: ' + error);
-}
-
 function translateCurrentPage() {
     chrome.tabs.query({
         currentWindow: true,
@@ -17,7 +9,6 @@ function translateCurrentPage() {
         var executing = browser.tabs.executeScript(currentTabId, {
             file: 'scripts/inject_google_translate_content.js'
         });
-        executing.then(onExecuted, onError);
     });
 }
 
@@ -41,3 +32,7 @@ chrome.contextMenus.create({
   contexts: ["all"]
 });
 browser.pageAction.onClicked.addListener(translateCurrentPage);
+
+browser.tabs.onActivated.addListener(function(tabInfo){
+  browser.pageAction.show(tabInfo.tabId);
+});
