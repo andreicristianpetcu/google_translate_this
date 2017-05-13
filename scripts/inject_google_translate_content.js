@@ -5,6 +5,13 @@ document.body.appendChild(gtdiv);
 
 var googleTranslateElementInitCode = "function(){ \
   new google.translate.TranslateElement({pageLanguage: 'auto', autoDisplay: true}, 'google_translate_element'); \
+  setTimeout(function(){ \
+    console.log('translating'); \
+    var iframe = document.getElementsByClassName('goog-te-banner-frame')[0]; \
+    var iframeDocument = iframe.contentDocument || iframe.contentWindow.document; \
+    iframeDocument.getElementsByClassName('goog-te-button')[0].children[0].children[0].click(); \
+    console.log('finished translation'); \
+  }, 1000); \
 }";
 
 var globalFunctionScript = document.createElement('script');
@@ -16,5 +23,3 @@ var gtScript = document.createElement('script');
 gtScript.type = "text/javascript";
 gtScript.src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
 document.getElementsByTagName('head')[0].appendChild(gtScript);
-
-//document.getElementsByClassName("goog-te-button")[0].children[0].children[0].click();
