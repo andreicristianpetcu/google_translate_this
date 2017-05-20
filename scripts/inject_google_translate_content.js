@@ -6,11 +6,9 @@ document.body.appendChild(gtdiv);
 var googleTranslateElementInitCode = "function(){ \
   new google.translate.TranslateElement({pageLanguage: 'auto', autoDisplay: true}, 'google_translate_element'); \
   setTimeout(function(){ \
-    console.log('translating'); \
     var iframe = document.getElementsByClassName('goog-te-banner-frame')[0]; \
     var iframeDocument = iframe.contentDocument || iframe.contentWindow.document; \
     iframeDocument.getElementsByClassName('goog-te-button')[0].children[0].children[0].click(); \
-    console.log('finished translation'); \
   }, 1000); \
 }";
 
