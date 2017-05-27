@@ -15,7 +15,7 @@ function showPageActionOnTab(tabInfo){
 }
 
 function translateCurrentPage() {
-    chrome.tabs.query({
+    browser.tabs.query({
         currentWindow: true,
         active: true
     }, function (foundTabs) {
@@ -26,33 +26,42 @@ function translateCurrentPage() {
     });
 }
 
-chrome.commands.onCommand.addListener(function(action) {
-  if (action == "translate-current-page") {
-    translateCurrentPage();
-  }
-});
+if (browser.commands) {
+  browser.commands.onCommand.addListener(function(action) {
+    if (action == "translate-current-page") {
+      translateCurrentPage();
+    }
+  });
+}
 
-browser.contextMenus.onClicked.addListener(function(info, tab) {
-  if (info.menuItemId == "translate-current-page") {
-    translateCurrentPage();
-  }
-});
+if (browser.contextMenus) {
+  browser.contextMenus.onClicked.addListener(function(info, tab) {
+    if (info.menuItemId == "translate-current-page") {
+      translateCurrentPage();
+    }
+  });
+  browser.contextMenus.create({
+    id: "translate-current-page",
+    title: "Translate Current Page",
+    contexts: ["all"]
+  });
+}
 
-browser.browserAction.onClicked.addListener(translateCurrentPage);
-browser.contextMenus.create({
-  id: "translate-current-page",
-  title: "Translate Current Page",
-  contexts: ["all"]
-});
-browser.pageAction.onClicked.addListener(translateCurrentPage);
+if (browser.browserAction) {
+  browser.browserAction.onClicked.addListener(translateCurrentPage);
+}
 
-browser.tabs.query({}).then((tabs) => {
-  var tab;
-  for (tab of tabs) {
+
+if (browser.pageAction) {
+  browser.pageAction.onClicked.addListener(translateCurrentPage);
+  browser.tabs.query({}).then((tabs) => {
+    var tab;
+    for (tab of tabs) {
+      showPageActionOnTab(tab);
+    }
+  });
+
+  browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
     showPageActionOnTab(tab);
-  }
-});
-
-browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
-  showPageActionOnTab(tab);
-});
+  });
+}
