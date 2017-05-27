@@ -46,13 +46,13 @@ browser.contextMenus.create({
 });
 browser.pageAction.onClicked.addListener(translateCurrentPage);
 
-//browser.tabs.query({}).then((tabs) => {
-//  var tab;
-//  for (tab of tabs) {
-//    showPageActionOnTab(tab);
-//  }
-//});
-//
-//browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
-//  showPageActionOnTab(tab);
-//});
+browser.tabs.query({}).then((tabs) => {
+  var tab;
+  for (tab of tabs) {
+    showPageActionOnTab(tab);
+  }
+});
+
+browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
+  showPageActionOnTab(tab);
+});
