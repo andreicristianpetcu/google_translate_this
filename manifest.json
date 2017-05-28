@@ -1,6 +1,6 @@
 {
 	"name": "__MSG_appName__",
-	"version": "1.2.5",
+	"version": "1.2.6",
 	"homepage_url": "https://github.com/andreicristianpetcu/google_translate_this",
 	"manifest_version": 2,
 	"description": "__MSG_appDescription__",
@@ -26,11 +26,7 @@
  ],
 	"browser_action": {
     "browser_style": true,
-		"default_icon": {
-			"19": "images/icon-19.png",
-			"38": "images/icon-38.png"
-		},
-   "default_title": "Google Translate This Page"
+    "default_title": "Google Translate This Page"
   },
 	"page_action": {
 		"default_icon": "images/translate_icon.svg",

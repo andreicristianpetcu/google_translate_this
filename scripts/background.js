@@ -48,6 +48,12 @@ if (browser.contextMenus) {
 }
 
 if (browser.browserAction) {
+  browser.browserAction.setIcon({
+		"path": {
+			"19": "images/icon-19.png",
+			"38": "images/icon-38.png"
+		}
+  });
   browser.browserAction.onClicked.addListener(translateCurrentPage);
 }
 
