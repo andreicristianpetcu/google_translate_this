@@ -42,7 +42,7 @@ if (browser.contextMenus) {
   });
   browser.contextMenus.create({
     id: "translate-current-page",
-    title: "Translate Current Page",
+    title: browser.i18n.getMessage("translateCurrentPage"),
     contexts: ["all"]
   });
 }

@@ -1,6 +1,6 @@
 {
   "appName": {
-    "message": "Google Translate This Page",
+    "message": "Tradu această pagină cu Google Translate",
     "description": "The name of the application"
   },
   "appDescription": {
@@ -8,7 +8,7 @@
     "description": "The description of the application"
   },
   "translateCurrentPage": {
-    "message": "Translate this page",
+    "message": "Tradu această pagină",
     "description": "Menu item used for translations"
   }
 }
