@@ -2,29 +2,55 @@
   "addons": {
     "{e34d5840-6b3b-49d8-92c2-9696798c4e2a}": {
       "updates": [
-        { "version": "1.0.0",
-          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.0.0/google_translate_this_page-1.0.0-an.fx.xpi" },
-        { "version": "1.0.2",
-          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.0.2/google_translate_this_page-1.0.2-an.fx.xpi" },
-        { "version": "1.0.3",
-          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.0.3/google_translate_this_page-1.0.3-an.fx.xpi" },
-        { "version": "1.2.0",
-          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.0/google_translate_this_page-1.2.0-an.fx.xpi" },
-        { "version": "1.2.2",
-          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.2/google_translate_this_page-1.2.2-an.fx.xpi" },
-        { "version": "1.2.3",
-          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.3/google_translate_this_page-1.2.3-an.fx.xpi" },
-        { "version": "1.2.4",
-          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.4/google_translate_this_page-1.2.4-an.fx.xpi" },
-        { "version": "1.2.5",
-          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.5/google_translate_this_page-1.2.5-an.fx.xpi" },
-        { "version": "1.2.6",
-          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.6/google_translate_this_page-1.2.6-an.fx.xpi" },
-        { "version": "1.2.7",
-          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.7/google_translate_this_page-1.2.7-an.fx.xpi" },
-        { "version": "1.3.0",
-            "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.3.0/google_translate_this_page-1.3.0-an.fx.xpi" }
-        ]
+        {
+          "version": "1.0.0",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.0.0/google_translate_this_page-1.0.0-an.fx.xpi"
+        },
+        {
+          "version": "1.0.2",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.0.2/google_translate_this_page-1.0.2-an.fx.xpi"
+        },
+        {
+          "version": "1.0.3",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.0.3/google_translate_this_page-1.0.3-an.fx.xpi"
+        },
+        {
+          "version": "1.2.0",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.0/google_translate_this_page-1.2.0-an.fx.xpi"
+        },
+        {
+          "version": "1.2.2",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.2/google_translate_this_page-1.2.2-an.fx.xpi"
+        },
+        {
+          "version": "1.2.3",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.3/google_translate_this_page-1.2.3-an.fx.xpi"
+        },
+        {
+          "version": "1.2.4",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.4/google_translate_this_page-1.2.4-an.fx.xpi"
+        },
+        {
+          "version": "1.2.5",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.5/google_translate_this_page-1.2.5-an.fx.xpi"
+        },
+        {
+          "version": "1.2.6",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.6/google_translate_this_page-1.2.6-an.fx.xpi"
+        },
+        {
+          "version": "1.2.7",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.2.7/google_translate_this_page-1.2.7-an.fx.xpi"
+        },
+        {
+          "version": "1.3.0",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.3.0/google_translate_this_page-1.3.0-an.fx.xpi"
+        },
+        {
+          "version": "1.4.0",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.4.0/google_translate_this_page-1.4.0-fx.xpi"
+        }
+      ]
     }
   }
 }
