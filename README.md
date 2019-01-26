@@ -10,7 +10,7 @@ This extension [executes remote code from Google in your current page](https://g
 I hope I can make it get into AMO soon but it depends on a lot of things.
 
 # Privacy considerations
-This extension by default does not transmit any info to any site. ONCE YOU CLICK TRANSLATE CONSIDER THE PAGE SENT TO GOOGLE! Unfortunately this is how Google Translate works. This is the best I could do with the APIs that are avilable. I tried to isolate the page somehow but it is really difficult. Not only this but the extension grabs code from google translate and injects it in your current page. This only happens after you click translate, if you don't interact with the extension, nothing gets send.
+This extension by default does [not transmit any info to any site](https://github.com/andreicristianpetcu/google_translate_this/blob/d3f1344e1ed0382a34e385fdfa2584b88eb2ee18/scripts/background.js#L38-L47). ONCE YOU CLICK TRANSLATE CONSIDER THE PAGE SENT TO GOOGLE! Unfortunately this is how Google Translate works. This is the best I could do with the APIs that are avilable. I tried to isolate the page somehow but it is really difficult. Not only this but the extension grabs code from google translate and injects it in your current page. This only happens after you click translate, if you don't interact with the extension, nothing gets send.
 
 This extension was designed for people leaving Chrome for Firefox. Some really need this feature and don't mind the downsides. If you want a more privacy frinedly extension, check out [AMO](https://addons.mozilla.org/firefox/search/?q=translate&sort=users&type=extension) it has quite a few of them. Unfortunately they are not as user friendly as this one.
 
