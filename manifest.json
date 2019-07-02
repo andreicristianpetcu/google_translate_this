@@ -20,6 +20,9 @@
     "tabs",
     "activeTab",
     "contextMenus",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>",
     "*://translate.google.com/*",
     "*://www.gstatic.com/images/branding/*",
     "*://www.google.com/images/*"
