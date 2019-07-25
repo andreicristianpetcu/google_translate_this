@@ -72,8 +72,6 @@ if (browser.pageAction) {
   });
 }
 
-var translateStaticLocation = "translate.googleapis.com";
-
 function parseCsp(policy) {
   return policy.split(';').reduce((result, directive) => {
     const trimmed = directive.trim();
@@ -108,13 +106,16 @@ function rewriteCSPHeader(e) {
   for (var header of e.responseHeaders) {
     if (header.name.toLowerCase() === "content-security-policy") {
       const parsedCsp = parseCsp(header.value);
+      var translateStaticLocation = "translate.googleapis.com";
       let newValue = insertOrAppend('script-src', translateStaticLocation, parsedCsp);
       newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue);
       newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue);
       newValue = insertOrAppend('connect-src', translateStaticLocation, newValue);
       newValue = insertOrAppend('style-src', translateStaticLocation, newValue);
       newValue = insertOrAppend('img-src', translateStaticLocation, newValue);
-      newValue = insertOrAppend('img-src', "gstatic.com", newValue);
+      newValue = insertOrAppend('img-src', "translate.google.com", newValue);
+      newValue = insertOrAppend('img-src', "www.gstatic.com", newValue);
+      newValue = insertOrAppend('img-src', "www.google.com", newValue);
       const joinedCsp = joinCsp(newValue);
       console.log("---" + header.value);
       console.log("+++" + joinedCsp);
