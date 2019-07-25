@@ -111,6 +111,7 @@ function rewriteCSPHeader(e) {
       let newValue = insertOrAppend('script-src', translateStaticLocation, parsedCsp);
       newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue);
       newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue);
+      newValue = insertOrAppend('connect-src', translateStaticLocation, newValue);
       newValue = insertOrAppend('style-src', translateStaticLocation, newValue);
       newValue = insertOrAppend('img-src', translateStaticLocation, newValue);
       newValue = insertOrAppend('img-src', "gstatic.com", newValue);
