@@ -74,27 +74,60 @@ if (browser.pageAction) {
 
 var translateStaticLocation = "translate.googleapis.com";
 
+function parseCsp(policy) {
+  return policy.split(';').reduce((result, directive) => {
+    const trimmed = directive.trim();
+    if (!trimmed) {
+      return result;
+    }
+    const split = trimmed.split(/\s+/g);
+    const key = split.shift();
+    if (!Object.prototype.hasOwnProperty.call(result, key)) {
+      result[key] = split;
+    }
+    return result;
+  }, {});
+};
+
+function joinCsp(parsedCsp) {
+  let directives = [];
+  for (var directiveName in parsedCsp) {
+    let directiveValue = parsedCsp[directiveName];
+    if(directiveValue.length === 0){
+      directives.push(directiveName);
+    } else if(directiveValue.length === 1) {
+      directives.push(directiveName + " " + directiveValue[0]);
+    } else {
+      directives.push(directiveName + " " + directiveValue.join(" "));
+    }
+  }
+  return directives.join('; ');
+}
+
 function rewriteCSPHeader(e) {
-  console.log('3');
   for (var header of e.responseHeaders) {
-    console.log('4');
     if (header.name.toLowerCase() === "content-security-policy") {
-      console.log('5 ' + e.url);
-      var oldHeader = header.value;
-      let newValue = insertOrAppend('script-src', translateStaticLocation, header.value);
-      newValue = insertOrAppend('style-src', translateStaticLocation, newValue);
-      header.value = newValue;
+      const parsedCsp = parseCsp(header.value);
+      const joinedCsp = joinCsp(parsedCsp);
+      //     var oldHeader = header.value;
+      //     let newValue = insertOrAppend('script-src', translateStaticLocation, header.value);
+      //     newValue = insertOrAppend('style-src', translateStaticLocation, newValue);
+      //     header.value = newValue;
+
+      console.log("---" + header.value);
+      console.log("+++" + joinedCsp);
+      console.log(header.value === joinedCsp);
     }
   }
   return { responseHeaders: e.responseHeaders };
 }
 
-function insertOrAppend(typeOfContent, domain, oldValue){
+function insertOrAppend(typeOfContent, domain, oldValue) {
   var typeOfContentParts = oldValue.split(typeOfContent);
   if (typeOfContentParts.length > 1) {
-    if(typeOfContentParts[1].indexOf(domain) === -1){
+    if (typeOfContentParts[1].indexOf(domain) === -1) {
       let unsafeInline = '';
-      if(typeOfContentParts[1].indexOf('unsafe-inline') === -1 ||  typeOfContentParts[1].indexOf('unsafe-inline') > 1) {
+      if (typeOfContentParts[1].indexOf('unsafe-inline') === -1 || typeOfContentParts[1].indexOf('unsafe-inline') > 1) {
         unsafeInline = ' \'unsafe-inline\'';
       }
       const newValue = typeOfContentParts[0] + typeOfContent + unsafeInline + ' ' + translateStaticLocation + typeOfContentParts[1];
