@@ -93,9 +93,9 @@ function joinCsp(parsedCsp) {
   let directives = [];
   for (var directiveName in parsedCsp) {
     let directiveValue = parsedCsp[directiveName];
-    if(directiveValue.length === 0){
+    if (directiveValue.length === 0) {
       directives.push(directiveName);
-    } else if(directiveValue.length === 1) {
+    } else if (directiveValue.length === 1) {
       directives.push(directiveName + " " + directiveValue[0]);
     } else {
       directives.push(directiveName + " " + directiveValue.join(" "));
@@ -108,34 +108,27 @@ function rewriteCSPHeader(e) {
   for (var header of e.responseHeaders) {
     if (header.name.toLowerCase() === "content-security-policy") {
       const parsedCsp = parseCsp(header.value);
-      const joinedCsp = joinCsp(parsedCsp);
-      //     var oldHeader = header.value;
-      //     let newValue = insertOrAppend('script-src', translateStaticLocation, header.value);
-      //     newValue = insertOrAppend('style-src', translateStaticLocation, newValue);
-      //     header.value = newValue;
-
+      let newValue = insertOrAppend('script-src', translateStaticLocation, parsedCsp);
+      newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue);
+      newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue);
+      newValue = insertOrAppend('style-src', translateStaticLocation, newValue);
+      newValue = insertOrAppend('img-src', translateStaticLocation, newValue);
+      newValue = insertOrAppend('img-src', "gstatic.com", newValue);
+      const joinedCsp = joinCsp(newValue);
       console.log("---" + header.value);
       console.log("+++" + joinedCsp);
       console.log(header.value === joinedCsp);
+      header.value = joinedCsp;
     }
   }
   return { responseHeaders: e.responseHeaders };
 }
 
 function insertOrAppend(typeOfContent, domain, oldValue) {
-  var typeOfContentParts = oldValue.split(typeOfContent);
-  if (typeOfContentParts.length > 1) {
-    if (typeOfContentParts[1].indexOf(domain) === -1) {
-      let unsafeInline = '';
-      if (typeOfContentParts[1].indexOf('unsafe-inline') === -1 || typeOfContentParts[1].indexOf('unsafe-inline') > 1) {
-        unsafeInline = ' \'unsafe-inline\'';
-      }
-      const newValue = typeOfContentParts[0] + typeOfContent + unsafeInline + ' ' + translateStaticLocation + typeOfContentParts[1];
-      console.log(typeOfContent + 'old ' + oldValue);
-      console.log(typeOfContent + 'new ' + newValue);
-      return newValue;
-    }
+  if (!oldValue[typeOfContent]) {
+    oldValue[typeOfContent] = [];
   }
+  oldValue[typeOfContent].push(domain);
   return oldValue;
 }
 
