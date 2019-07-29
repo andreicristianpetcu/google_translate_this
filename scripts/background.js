@@ -91,46 +91,59 @@ function joinCsp(parsedCsp) {
   let directives = [];
   for (var directiveName in parsedCsp) {
     let directiveValue = parsedCsp[directiveName];
+    let directivePartToAppend;
     if (directiveValue.length === 0) {
-      directives.push(directiveName);
+      directivePartToAppend = directiveName;
     } else if (directiveValue.length === 1) {
-      directives.push(directiveName + " " + directiveValue[0]);
+      directivePartToAppend = directiveName + " " + directiveValue[0];
     } else {
-      directives.push(directiveName + " " + directiveValue.join(" "));
+      directivePartToAppend = directiveName + " " + directiveValue.join(" ");
     }
+    directives.push(directivePartToAppend);
   }
   return directives.join('; ');
 }
 
 function rewriteCSPHeader(e) {
-  for (var header of e.responseHeaders) {
-    if (header.name.toLowerCase() === "content-security-policy") {
-      const parsedCsp = parseCsp(header.value);
-      var translateStaticLocation = "translate.googleapis.com";
-      let newValue = insertOrAppend('script-src', translateStaticLocation, parsedCsp);
-      newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue);
-      newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue);
-      newValue = insertOrAppend('connect-src', translateStaticLocation, newValue);
-      newValue = insertOrAppend('style-src', translateStaticLocation, newValue);
-      newValue = insertOrAppend('img-src', translateStaticLocation, newValue);
-      newValue = insertOrAppend('img-src', "translate.google.com", newValue);
-      newValue = insertOrAppend('img-src', "www.gstatic.com", newValue);
-      newValue = insertOrAppend('img-src', "www.google.com", newValue);
-      const joinedCsp = joinCsp(newValue);
-      console.log("---" + header.value);
-      console.log("+++" + joinedCsp);
-      console.log(header.value === joinedCsp);
-      header.value = joinedCsp;
+  if (e.type === "main_frame") {
+    for (var header of e.responseHeaders) {
+      if (header.name.toLowerCase() === "content-security-policy") {
+        const parsedCsp = parseCsp(header.value);
+        const defaultSrc = parsedCsp['default-src'];
+        var translateStaticLocation = "translate.googleapis.com";
+        let newValue = parsedCsp;
+        newValue = insertOrAppend('script-src', translateStaticLocation, newValue, defaultSrc);
+        newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue, defaultSrc);
+        newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue, defaultSrc);
+        newValue = insertOrAppend('connect-src', translateStaticLocation, newValue);
+        newValue = insertOrAppend('style-src', translateStaticLocation, newValue, defaultSrc);
+        newValue = insertOrAppend('img-src', translateStaticLocation, newValue, defaultSrc);
+        newValue = insertOrAppend('img-src', "translate.google.com", newValue, defaultSrc);
+        newValue = insertOrAppend('img-src', "www.gstatic.com", newValue, defaultSrc);
+        newValue = insertOrAppend('img-src', "www.google.com", newValue, defaultSrc);
+        const joinedCsp = joinCsp(newValue);
+        // console.log("..." + e.url + " " + e.type);
+        // console.log("---" + header.value);
+        // console.log("+++" + joinedCsp);
+        // console.log(header.value === joinedCsp);
+        header.value = joinedCsp;
+      }
     }
   }
   return { responseHeaders: e.responseHeaders };
 }
 
-function insertOrAppend(typeOfContent, domain, oldValue) {
+function insertOrAppend(typeOfContent, domain, oldValue, defaultSrc) {
   if (!oldValue[typeOfContent]) {
-    oldValue[typeOfContent] = [];
+    if(defaultSrc){
+      oldValue[typeOfContent] = defaultSrc.slice();
+    } else {
+      oldValue[typeOfContent] = ["'self'"];
+    }
   }
-  oldValue[typeOfContent].push(domain);
+  if (oldValue[typeOfContent].indexOf(domain) === -1) {
+    oldValue[typeOfContent].push(domain);
+  }
   return oldValue;
 }
 
