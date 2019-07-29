@@ -122,10 +122,10 @@ function rewriteCSPHeader(e) {
         newValue = insertOrAppend('img-src', "www.gstatic.com", newValue, defaultSrc);
         newValue = insertOrAppend('img-src', "www.google.com", newValue, defaultSrc);
         const joinedCsp = joinCsp(newValue);
-        // console.log("..." + e.url + " " + e.type);
-        // console.log("---" + header.value);
-        // console.log("+++" + joinedCsp);
-        // console.log(header.value === joinedCsp);
+        console.log("..." + e.url + " " + e.type);
+        console.log("---" + header.value);
+        console.log("+++" + joinedCsp);
+        console.log(header.value === joinedCsp);
         header.value = joinedCsp;
       }
     }
