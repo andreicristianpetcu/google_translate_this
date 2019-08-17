@@ -40,7 +40,7 @@
       "suggested_key": {
         "default": "Alt+Shift+P"
       },
-      "description": "Translate Current Page"
+      "description": "Translate current domain"
     }
   },
   "applications": {

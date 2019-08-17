@@ -175,12 +175,23 @@ function updateMenuForDomain() {
     currentWindow: true,
     active: true
   }, function (foundTabs) {
+    const tabId = foundTabs[0].id;
     const domain = getDomain(foundTabs[0].url);
     const alwaysOrNever = !StorageService.shouldAlwaysTranslate(domain);
+    const title = browser.i18n.getMessage("alwaysTranslate-" + alwaysOrNever) + " " + domain;
+    const visible = domain.length > 0;
     browser.contextMenus.update("translate-current-page", {
-      visible: domain.length > 0,
-      title: browser.i18n.getMessage("alwaysTranslate-" + alwaysOrNever) + " " + domain
+      visible, title
     });
+    if(visible){
+      browser.pageAction.setTitle({tabId, title});
+      browser.browserAction.setTitle({title});
+      browser.pageAction.show(tabId);
+      browser.browserAction.enable(tabId);
+    } else {
+      browser.pageAction.hide(tabId);
+      browser.browserAction.disable(tabId);
+    }
   });
 }
 
