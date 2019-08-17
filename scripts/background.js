@@ -233,21 +233,3 @@ class BrowserService {
       });
   }
 }
-
-// var langCookie = {
-//   value: ""
-// }
-
-// function gotLangCookie(item) {
-//   langCookie.value = item.langCookie.value;
-//   browser.cookies.onChanged.addListener(function (changeInfo) {
-//     if (changeInfo.cause === "overwrite" && changeInfo.cookie.name === "googtrans") {
-//       langCookie.value = changeInfo.cookie.value;
-//       browser.storage.local.set({langCookie});
-//     }
-//   });
-// }
-
-// browser.storage.local.get("langCookie")
-//   .then(gotLangCookie);
-
