@@ -177,6 +177,7 @@ function updateMenuForDomain(){
     const domain = getHost(foundTabs[0].url);
     const alwaysOrNever = !shouldAlwaysTranslate(domain);
     browser.contextMenus.update("translate-current-page", {
+      visible: domain.length > 0,
       title: browser.i18n.getMessage("alwaysTranslate-" + alwaysOrNever) + " " + domain
     });
   });
