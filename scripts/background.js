@@ -1,5 +1,3 @@
-'use strict';
-
 const APPLICABLE_PROTOCOLS = ["http:", "https:"];
 
 function protocolIsApplicable(url) {
@@ -165,11 +163,7 @@ function getDomain(url) {
 function translateTab(tabId) {
   setTimeout(function () {
     browser.tabs.get(tabId).then(function (tabInfo) {
-      browser.cookies.set({
-        url: tabInfo.url,
-        name: "googtrans",
-        value: langCookie.value
-      });
+      StorageService.setLangCookie(tabInfo.url);
       browser.tabs.executeScript(tabId, {
         file: 'scripts/inject_google_translate_content.js'
       });
@@ -238,50 +232,20 @@ class BrowserService {
   }
 }
 
-let allDomainsData = [];
+// var langCookie = {
+//   value: ""
+// }
 
-class StorageService {
-  static getDomainDataOrDefaults(domain) {
-    let domainData = allDomainsData[domain];
-    if (!domainData) {
-      domainData = {
-        shouldAlwaysTranslate: false,
-        hasCSP: true
-      }
-      allDomainsData[domain] = domainData;
-    }
-    return domainData;
-  }
-  static shouldAlwaysTranslate(domain) {
-    return StorageService.getDomainDataOrDefaults(domain).shouldAlwaysTranslate;
-  }
-  static toggleTranslateDomain(domain) {
-    const domainData = StorageService.getDomainDataOrDefaults(domain);
-    return domainData.shouldAlwaysTranslate = !domainData.shouldAlwaysTranslate;
-  }
-  static setHasCsp(domain) {
-    StorageService.getDomainDataOrDefaults(domain).hasCSP = true;
-  }
-  static hasCsp(domain) {
-    return StorageService.getDomainDataOrDefaults(domain).hasCSP;
-  }
+// function gotLangCookie(item) {
+//   langCookie.value = item.langCookie.value;
+//   browser.cookies.onChanged.addListener(function (changeInfo) {
+//     if (changeInfo.cause === "overwrite" && changeInfo.cookie.name === "googtrans") {
+//       langCookie.value = changeInfo.cookie.value;
+//       browser.storage.local.set({langCookie});
+//     }
+//   });
+// }
 
-}
-
-var langCookie = {
-  value: ""
-}
-
-function gotLangCookie(item) {
-  langCookie.value = item.langCookie.value;
-  browser.cookies.onChanged.addListener(function (changeInfo) {
-    if (changeInfo.cause === "overwrite" && changeInfo.cookie.name === "googtrans") {
-      langCookie.value = changeInfo.cookie.value;
-      browser.storage.local.set({langCookie});
-    }
-  });
-}
-
-browser.storage.local.get("langCookie")
-  .then(gotLangCookie);
+// browser.storage.local.get("langCookie")
+//   .then(gotLangCookie);
 

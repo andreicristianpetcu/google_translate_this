@@ -13,6 +13,7 @@
 	"default_locale": "en",
 	"background": {
 		"scripts": [
+			"scripts/StorageService.js",
 			"scripts/background.js"
 		]
 	},
