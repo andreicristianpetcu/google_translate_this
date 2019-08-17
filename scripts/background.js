@@ -12,11 +12,12 @@ function showPageActionOnTab(tabInfo) {
   }
 }
 
-function toggleTranslateCurrentDomain(domain, currentTabId) {
-  const alwaysTranslateDomain = StorageService.toggleTranslateDomain(domain);
+async function toggleTranslateCurrentDomain(domain, currentTabId) {
+  const alwaysTranslateDomain = await StorageService.toggleTranslateDomain(domain);
   updateMenuForDomain();
   if (alwaysTranslateDomain) {
-    if (!StorageService.hasCsp(domain)) {
+    const hasCsp = await StorageService.hasCsp(domain);
+    if (!hasCsp) {
       translateTab(currentTabId);
     } else {
       BrowserService.reloadTab(currentTabId);
@@ -109,13 +110,13 @@ function joinCsp(parsedCsp) {
   return directives.join('; ');
 }
 
-function rewriteCSPHeader(e) {
+async function rewriteCSPHeader(e) {
   if (e.type === "main_frame") {
     for (var header of e.responseHeaders) {
       if (header.name.toLowerCase() === "content-security-policy") {
         const domain = getDomain(e.url);
-        StorageService.hasCsp(domain);
-        if (StorageService.shouldAlwaysTranslate(domain)) {
+        const shouldAlwaysTranslate = await StorageService.shouldAlwaysTranslate(domain);
+        if (shouldAlwaysTranslate) {
           const parsedCsp = parseCsp(header.value);
           const defaultSrc = parsedCsp['default-src'];
           var translateStaticLocation = "translate.googleapis.com";
@@ -171,15 +172,15 @@ function translateTab(tabId) {
   }, 250);
 }
 
-function updateMenuForDomain() {
+async function updateMenuForDomain() {
   browser.tabs.query({
     currentWindow: true,
     active: true
-  }, function (foundTabs) {
+  }, async function (foundTabs) {
     const tabId = foundTabs[0].id;
     const domain = getDomain(foundTabs[0].url);
-    const alwaysOrNever = !StorageService.shouldAlwaysTranslate(domain);
-    const title = browser.i18n.getMessage("alwaysTranslate-" + alwaysOrNever) + " " + domain;
+    const alwaysOrNever = await StorageService.shouldAlwaysTranslate(domain);
+    const title = browser.i18n.getMessage("alwaysTranslate-" + !alwaysOrNever) + " " + domain;
     const visible = domain.length > 0;
     browser.contextMenus.update("translate-current-page", {
       visible, title
@@ -196,9 +197,10 @@ function updateMenuForDomain() {
   });
 }
 
-function onComplete(e) {
+async function onComplete(e) {
   if (e.type === "main_frame") {
-    if (StorageService.shouldAlwaysTranslate(getDomain(e.url))) {
+    const shouldAlwaysTranslate = await StorageService.shouldAlwaysTranslate(getDomain(e.url));
+    if (shouldAlwaysTranslate) {
       translateTab(e.tabId);
     }
   }
