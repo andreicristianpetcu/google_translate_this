@@ -49,6 +49,10 @@
         {
           "version": "1.4.0",
           "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.4.0/google_translate_this_page-1.4.0-fx.xpi"
+        },
+        {
+          "version": "2.0.2",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v2.0.2/google_translate_this_page-2.0.2-fx.xpi"
         }
       ]
     }
