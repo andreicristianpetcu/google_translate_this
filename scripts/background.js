@@ -24,6 +24,11 @@ function toggleTranslateCurrentDomain(domain, currentTabId){
   console.log(domain + "=" + alwaysTranslateDomains[domain]);
   if(alwaysTranslateDomains[domain]){
     translateTab(currentTabId);
+  } else {
+    browser.tabs.executeScript(
+      currentTabId, {
+      code: `window.location = window.location; ""`
+    });
   }
 }
 
@@ -166,7 +171,7 @@ function translateTab(tabId){
     browser.tabs.executeScript(tabId, {
       file: 'scripts/inject_google_translate_content.js'
     });
-  }, 500);
+  }, 250);
 }
 
 function updateMenuForDomain(){
