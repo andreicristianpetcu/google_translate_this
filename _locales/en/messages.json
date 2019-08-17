@@ -10,5 +10,13 @@
   "translateCurrentPage": {
     "message": "Translate this page",
     "description": "Menu item used for translations"
+  },
+  "alwaystranslate-true": {
+    "message": "Always translate",
+    "description": "Menu item used for always translating a domain"
+  },
+  "alwaystranslate-false": {
+    "message": "Never translate",
+    "description": "Menu item used for never translating a domain"
   }
 }

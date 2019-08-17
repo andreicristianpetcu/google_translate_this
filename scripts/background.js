@@ -20,6 +20,7 @@ function shouldAlwaysTranslate(domain){
 }
 function toggleTranslateCurrentDomain(domain, currentTabId){
   alwaysTranslateDomains[domain] = !alwaysTranslateDomains[domain];
+  updateMenuForDomain();
   console.log(domain + "=" + alwaysTranslateDomains[domain]);
   if(alwaysTranslateDomains[domain]){
     translateTab(currentTabId);
@@ -162,19 +163,21 @@ function getHost(url){
 
 function translateTab(tabId){
   setTimeout(function(){
-    var executing = browser.tabs.executeScript(tabId, {
+    browser.tabs.executeScript(tabId, {
       file: 'scripts/inject_google_translate_content.js'
     });
   }, 500);
 }
 
-function updateMenuForDomain(domain){
+function updateMenuForDomain(){
   browser.tabs.query({
     currentWindow: true,
     active: true
   }, function (foundTabs) {
+    const domain = getHost(foundTabs[0].url);
+    const alwaysOrNever = !shouldAlwaysTranslate(domain);
     browser.contextMenus.update("translate-current-page", {
-      title: browser.i18n.getMessage("translateCurrentPage") + " " + getHost(foundTabs[0].url)
+      title: browser.i18n.getMessage("alwaysTranslate-" + alwaysOrNever) + " " + domain
     });
   });
 }

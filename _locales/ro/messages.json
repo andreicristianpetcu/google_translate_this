@@ -10,5 +10,13 @@
   "translateCurrentPage": {
     "message": "Tradu această pagină",
     "description": "Menu item used for translations"
+  },
+  "alwaystranslate-true": {
+    "message": "Mereu traduce",
+    "description": "Menu item used for always translating a domain"
+  },
+  "alwaystranslate-false": {
+    "message": "Nu traduce",
+    "description": "Menu item used for never translating a domain"
   }
 }
