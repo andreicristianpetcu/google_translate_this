@@ -18,7 +18,11 @@ function toggleTranslateCurrentDomain(domain, currentTabId) {
   const alwaysTranslateDomain = StorageService.toggleTranslateDomain(domain);
   updateMenuForDomain();
   if (alwaysTranslateDomain) {
-    translateTab(currentTabId);
+    if(!StorageService.hasCsp(domain)){
+      translateTab(currentTabId);
+    } else {
+      BrowserService.reloadTab(currentTabId);
+    }
   } else {
     BrowserService.reloadTab(currentTabId);
   }
@@ -30,7 +34,7 @@ function translateCurrentPage() {
     active: true
   }, function (foundTabs) {
     var currentTabId = foundTabs[0].id;
-    toggleTranslateCurrentDomain(getHost(foundTabs[0].url), currentTabId);
+    toggleTranslateCurrentDomain(getDomain(foundTabs[0].url), currentTabId);
   });
 }
 
@@ -107,33 +111,33 @@ function joinCsp(parsedCsp) {
   return directives.join('; ');
 }
 
-let siteData = [];
-
 function rewriteCSPHeader(e) {
   if (e.type === "main_frame") {
     for (var header of e.responseHeaders) {
       if (header.name.toLowerCase() === "content-security-policy") {
-        const hostName = new URL(e.url).host;
-        console.log(hostName);
-        // const parsedCsp = parseCsp(header.value);
-        // const defaultSrc = parsedCsp['default-src'];
-        // var translateStaticLocation = "translate.googleapis.com";
-        // let newValue = parsedCsp;
-        // newValue = insertOrAppend('script-src', translateStaticLocation, newValue, defaultSrc);
-        // newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue, defaultSrc);
-        // newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue, defaultSrc);
-        // newValue = insertOrAppend('connect-src', translateStaticLocation, newValue);
-        // newValue = insertOrAppend('style-src', translateStaticLocation, newValue, defaultSrc);
-        // newValue = insertOrAppend('img-src', translateStaticLocation, newValue, defaultSrc);
-        // newValue = insertOrAppend('img-src', "translate.google.com", newValue, defaultSrc);
-        // newValue = insertOrAppend('img-src', "www.gstatic.com", newValue, defaultSrc);
-        // newValue = insertOrAppend('img-src', "www.google.com", newValue, defaultSrc);
-        // const joinedCsp = joinCsp(newValue);
-        // console.log("..." + e.url + " " + e.type);
-        // console.log("---" + header.value);
-        // console.log("+++" + joinedCsp);
-        // console.log(header.value === joinedCsp);
-        // header.value = joinedCsp;
+        const domain = getDomain(e.url);
+        StorageService.hasCsp(domain);
+        if (StorageService.shouldAlwaysTranslate(domain)) {
+          const parsedCsp = parseCsp(header.value);
+          const defaultSrc = parsedCsp['default-src'];
+          var translateStaticLocation = "translate.googleapis.com";
+          let newValue = parsedCsp;
+          newValue = insertOrAppend('script-src', translateStaticLocation, newValue, defaultSrc);
+          newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue, defaultSrc);
+          newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue, defaultSrc);
+          newValue = insertOrAppend('connect-src', translateStaticLocation, newValue);
+          newValue = insertOrAppend('style-src', translateStaticLocation, newValue, defaultSrc);
+          newValue = insertOrAppend('img-src', translateStaticLocation, newValue, defaultSrc);
+          newValue = insertOrAppend('img-src', "translate.google.com", newValue, defaultSrc);
+          newValue = insertOrAppend('img-src', "www.gstatic.com", newValue, defaultSrc);
+          newValue = insertOrAppend('img-src', "www.google.com", newValue, defaultSrc);
+          const joinedCsp = joinCsp(newValue);
+          // console.log("..." + e.url + " " + e.type);
+          // console.log("---" + header.value);
+          // console.log("+++" + joinedCsp);
+          // console.log(header.value === joinedCsp);
+          header.value = joinedCsp;
+        }
       }
     }
   }
@@ -154,7 +158,7 @@ function insertOrAppend(typeOfContent, domain, oldValue, defaultSrc) {
   return oldValue;
 }
 
-function getHost(url) {
+function getDomain(url) {
   return new URL(url).host;
 }
 
@@ -171,7 +175,7 @@ function updateMenuForDomain() {
     currentWindow: true,
     active: true
   }, function (foundTabs) {
-    const domain = getHost(foundTabs[0].url);
+    const domain = getDomain(foundTabs[0].url);
     const alwaysOrNever = !StorageService.shouldAlwaysTranslate(domain);
     browser.contextMenus.update("translate-current-page", {
       visible: domain.length > 0,
@@ -182,7 +186,7 @@ function updateMenuForDomain() {
 
 function onComplete(e) {
   if (e.type === "main_frame") {
-    if (StorageService.shouldAlwaysTranslate(getHost(e.url))) {
+    if (StorageService.shouldAlwaysTranslate(getDomain(e.url))) {
       translateTab(e.tabId);
     }
   }
@@ -203,6 +207,10 @@ browser.webRequest.onCompleted.addListener(
   { urls: ["<all_urls>"] }
 );
 
+browser.webRequest.onHeadersReceived.addListener(rewriteCSPHeader,
+  { urls: ["<all_urls>"] },
+  ["blocking", "responseHeaders"]);
+
 class BrowserService {
   static reloadTab(currentTabId) {
     browser.tabs.executeScript(
@@ -219,7 +227,7 @@ class StorageService {
     if (!domainData) {
       domainData = {
         shouldAlwaysTranslate: false,
-        hasCSP: false
+        hasCSP: true
       }
       allDomainsData[domain] = domainData;
     }
@@ -229,7 +237,14 @@ class StorageService {
     return StorageService.getDomainDataOrDefaults(domain).shouldAlwaysTranslate;
   }
   static toggleTranslateDomain(domain) {
-    const domainData = this.getDomainDataOrDefaults(domain);
+    const domainData = StorageService.getDomainDataOrDefaults(domain);
     return domainData.shouldAlwaysTranslate = !domainData.shouldAlwaysTranslate;
   }
+  static setHasCsp(domain) {
+    StorageService.getDomainDataOrDefaults(domain).hasCSP = true;
+  }
+  static hasCsp(domain) {
+    return StorageService.getDomainDataOrDefaults(domain).hasCSP;
+  }
+
 }
