@@ -36,26 +36,23 @@ function translateCurrentPage() {
   });
 }
 
-if (browser.commands) {
-  browser.commands.onCommand.addListener(function (action) {
-    if (action == "translate-current-page") {
-      translateCurrentPage();
-    }
-  });
-}
+browser.commands.onCommand.addListener(function (action) {
+  if (action == "translate-current-page") {
+    translateCurrentPage();
+  }
+});
 
-if (browser.contextMenus) {
-  browser.contextMenus.onClicked.addListener(function (info, tab) {
-    if (info.menuItemId == "translate-current-page") {
-      translateCurrentPage();
-    }
-  });
-  browser.contextMenus.create({
-    id: "translate-current-page",
-    title: browser.i18n.getMessage("translateCurrentPage"),
-    contexts: ["all"]
-  });
-}
+browser.contextMenus.onClicked.addListener(function (info, tab) {
+  if (info.menuItemId == "translate-current-page") {
+    translateCurrentPage();
+  }
+});
+
+browser.contextMenus.create({
+  id: "translate-current-page",
+  title: browser.i18n.getMessage("translateCurrentPage"),
+  contexts: ["all"]
+});
 
 if (browser.browserAction) {
   browser.browserAction.setIcon({
@@ -68,19 +65,17 @@ if (browser.browserAction) {
 }
 
 
-if (browser.pageAction) {
-  browser.pageAction.onClicked.addListener(translateCurrentPage);
-  browser.tabs.query({}).then((tabs) => {
-    var tab;
-    for (tab of tabs) {
-      showPageActionOnTab(tab);
-    }
-  });
-
-  browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
+browser.pageAction.onClicked.addListener(translateCurrentPage);
+browser.tabs.query({}).then((tabs) => {
+  var tab;
+  for (tab of tabs) {
     showPageActionOnTab(tab);
-  });
-}
+  }
+});
+
+browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
+  showPageActionOnTab(tab);
+});
 
 function parseCsp(policy) {
   return policy.split(';').reduce((result, directive) => {
@@ -173,6 +168,17 @@ function translateTab(tabId){
   }, 500);
 }
 
+function updateMenuForDomain(domain){
+  browser.tabs.query({
+    currentWindow: true,
+    active: true
+  }, function (foundTabs) {
+    browser.contextMenus.update("translate-current-page", {
+      title: browser.i18n.getMessage("translateCurrentPage") + " " + getHost(foundTabs[0].url)
+    });
+  });
+}
+
 function onComplete(e) {
   if (e.type === "main_frame") {
     if(shouldAlwaysTranslate(getHost(e.url))){
@@ -180,6 +186,17 @@ function onComplete(e) {
     }
   }
 }
+
+let lastSelectedTab = 0;
+function handleUpdated(tabId, changeInfo, tabInfo) {
+  const isWindowFocusChange = changeInfo === undefined && tabInfo === undefined;
+  if (isWindowFocusChange || changeInfo.url || lastSelectedTab !== tabId) {
+    updateMenuForDomain();
+  }
+}
+
+browser.tabs.onUpdated.addListener(handleUpdated);
+browser.windows.onFocusChanged.addListener(handleUpdated);
 
 browser.webRequest.onCompleted.addListener(
   onComplete,
