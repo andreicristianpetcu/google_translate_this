@@ -105,7 +105,7 @@ function joinCsp(parsedCsp) {
 }
 
 function rewriteCSPHeader(e) {
-  if (e.type === "main_frame") {
+  // if (e.type === "main_frame") {
     for (var header of e.responseHeaders) {
       if (header.name.toLowerCase() === "content-security-policy") {
         const parsedCsp = parseCsp(header.value);
@@ -115,12 +115,12 @@ function rewriteCSPHeader(e) {
         newValue = insertOrAppend('script-src', translateStaticLocation, newValue, defaultSrc);
         newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue, defaultSrc);
         newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue, defaultSrc);
-        newValue = insertOrAppend('connect-src', translateStaticLocation, newValue);
-        newValue = insertOrAppend('style-src', translateStaticLocation, newValue, defaultSrc);
-        newValue = insertOrAppend('img-src', translateStaticLocation, newValue, defaultSrc);
-        newValue = insertOrAppend('img-src', "translate.google.com", newValue, defaultSrc);
-        newValue = insertOrAppend('img-src', "www.gstatic.com", newValue, defaultSrc);
-        newValue = insertOrAppend('img-src', "www.google.com", newValue, defaultSrc);
+        // newValue = insertOrAppend('connect-src', translateStaticLocation, newValue);
+        // newValue = insertOrAppend('style-src', translateStaticLocation, newValue, defaultSrc);
+        // newValue = insertOrAppend('img-src', translateStaticLocation, newValue, defaultSrc);
+        // newValue = insertOrAppend('img-src', "translate.google.com", newValue, defaultSrc);
+        // newValue = insertOrAppend('img-src', "www.gstatic.com", newValue, defaultSrc);
+        // newValue = insertOrAppend('img-src', "www.google.com", newValue, defaultSrc);
         const joinedCsp = joinCsp(newValue);
         console.log("..." + e.url + " " + e.type);
         console.log("---" + header.value);
@@ -129,7 +129,7 @@ function rewriteCSPHeader(e) {
         header.value = joinedCsp;
       }
     }
-  }
+  // }
   return { responseHeaders: e.responseHeaders };
 }
 
