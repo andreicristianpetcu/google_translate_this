@@ -1,1 +1,0 @@
-zip tr.zip manifest.json scripts/* images/* _locales/*
