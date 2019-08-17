@@ -59,17 +59,14 @@ const cache = [];
 class CachedStorageLocal {
     static async getFromCacheStorageOrDefault(key, defaultValue) {
         if (cache[key]) {
-            console.log(">>cache " + key + " " + JSON.stringify(cache[key]));
             return cache[key];
         }
         const item = await browser.storage.local.get(key);
         if (item[key]) {
             cache[key] = item[key];
-            console.log(">>storage " + key + " " + JSON.stringify(cache[key]));
             return item[key];
         }
         CachedStorageLocal.save(key, defaultValue);
-        console.log(">>default " + key + " " + JSON.stringify(defaultValue));
         return defaultValue;
     }
 
@@ -77,7 +74,6 @@ class CachedStorageLocal {
         cache[key] = value;
         let objectToStore = {};
         objectToStore[key] = value;
-        console.log("<<save " + JSON.stringify(objectToStore));
         return browser.storage.local.set(objectToStore);
     }
 
