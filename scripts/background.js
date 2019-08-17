@@ -105,40 +105,73 @@ function joinCsp(parsedCsp) {
 }
 
 function rewriteCSPHeader(e) {
-  // if (e.type === "main_frame") {
+  if (e.type === "main_frame") {
     for (var header of e.responseHeaders) {
       if (header.name.toLowerCase() === "content-security-policy") {
         const parsedCsp = parseCsp(header.value);
         const defaultSrc = parsedCsp['default-src'];
-        var translateStaticLocation = "translate.googleapis.com";
         let newValue = parsedCsp;
-        newValue = insertOrAppend('script-src', translateStaticLocation, newValue, defaultSrc);
         newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue, defaultSrc);
         newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue, defaultSrc);
-        // newValue = insertOrAppend('connect-src', translateStaticLocation, newValue);
-        // newValue = insertOrAppend('style-src', translateStaticLocation, newValue, defaultSrc);
-        // newValue = insertOrAppend('img-src', translateStaticLocation, newValue, defaultSrc);
-        // newValue = insertOrAppend('img-src', "translate.google.com", newValue, defaultSrc);
-        // newValue = insertOrAppend('img-src', "www.gstatic.com", newValue, defaultSrc);
-        // newValue = insertOrAppend('img-src', "www.google.com", newValue, defaultSrc);
+        newValue = insertOrAppend('script-src', "translate.googleapis.com", newValue, defaultSrc);
+        //google news ++
+        newValue = insertOrAppend('script-src', "www.gstatic.com", newValue, defaultSrc);
+        newValue = insertOrAppend('script-src', "ssl.gstatic.com", newValue, defaultSrc);
+        newValue = insertOrAppend('script-src', "www.google.com", newValue, defaultSrc);
+        newValue = insertOrAppend('script-src', "apis.google.com", newValue, defaultSrc);
+        newValue = insertOrAppend('script-src', "www.google-analytics.com", newValue, defaultSrc);
+        //google news --
+        newValue = insertOrAppend('connect-src', "translate.googleapis.com", newValue);
+        //google news++
+        newValue = insertOrAppend('style-src', "'unsafe-inline'", newValue, defaultSrc);
+        newValue = insertOrAppend('style-src', "'unsafe-eval'", newValue, defaultSrc);
+        newValue = insertOrAppend('style-src', "www.gstatic.com", newValue, defaultSrc);
+        //google news--
+        newValue = insertOrAppend('style-src', "translate.googleapis.com", newValue, defaultSrc);
+        newValue = insertOrAppend('img-src', "translate.googleapis.com", newValue, defaultSrc);
+        newValue = insertOrAppend('img-src', "translate.google.com", newValue, defaultSrc);
+        newValue = insertOrAppend('img-src', "www.gstatic.com", newValue, defaultSrc);
+        newValue = insertOrAppend('img-src', "www.google.com", newValue, defaultSrc);
+        //google news++
+        newValue = insertOrAppend('img-src', "ssl.gstatic.com", newValue, defaultSrc);
+        newValue = insertOrAppend('img-src', "*.googleusercontent.com", newValue, defaultSrc);
+        newValue = insertOrAppend('img-src', "www.google-analytics.com", newValue, defaultSrc);
+        newValue = insertOrAppend('img-src', "*.youtube.com", newValue, defaultSrc);
+        newValue = insertOrAppend('img-src', "stats.g.doubleclick.net", newValue, defaultSrc);
+        //google news--
         const joinedCsp = joinCsp(newValue);
-        console.log("..." + e.url + " " + e.type);
+        console.log("\n..." + e.url + " " + e.type);
         console.log("---" + header.value);
         console.log("+++" + joinedCsp);
         console.log(header.value === joinedCsp);
         header.value = joinedCsp;
       }
     }
-  // }
+  }
   return { responseHeaders: e.responseHeaders };
 }
 
+function removeNounce(directiveValues) {
+  if (directiveValues) {
+    let cleanedValues = [];
+    for (let value of directiveValues) {
+      if (value.indexOf('nonce-') == -1) {
+        cleanedValues.push(value);
+      }
+    }
+    return cleanedValues;
+  } else {
+    return directiveValues
+  }
+}
+
 function insertOrAppend(typeOfContent, domain, oldValue, defaultSrc) {
+  oldValue[typeOfContent] = removeNounce(oldValue[typeOfContent]);
   if (!oldValue[typeOfContent]) {
-    if(defaultSrc){
+    if (defaultSrc) {
       oldValue[typeOfContent] = defaultSrc.slice();
     } else {
-      oldValue[typeOfContent] = ["'self'"];
+      oldValue[typeOfContent] = ["'self'", "'unsafe-inline'"];
     }
   }
   if (oldValue[typeOfContent].indexOf(domain) === -1) {
