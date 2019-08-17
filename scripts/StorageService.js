@@ -1,7 +1,5 @@
 let allDomainsData = [];
-let langCookie = {
-    value: "/auto/en"
-}
+const STORAGE_LANG_KEY = "langCookie";
 
 class StorageService {
     static getDomainDataOrDefaults(domain) {
@@ -22,23 +20,17 @@ class StorageService {
         const domainData = StorageService.getDomainDataOrDefaults(domain);
         return domainData.shouldAlwaysTranslate = !domainData.shouldAlwaysTranslate;
     }
+
     static setHasCsp(domain) {
         StorageService.getDomainDataOrDefaults(domain).hasCSP = true;
     }
+
     static hasCsp(domain) {
         return StorageService.getDomainDataOrDefaults(domain).hasCSP;
     }
 
-    static async getGoogtransCookie() {
-        const item = await browser.storage.local.get("langCookie");
-        if (item && item.langCookie && item.langCookie.value) {
-            return item.langCookie.value
-        } else {
-            return langCookie.value
-        }
-    }
-
-    static setLangCookie(domain) {
+    static async setLangCookie(domain) {
+        const langCookie = await getGoogtransCookie();
         browser.cookies.set({
             url: domain,
             name: "googtrans",
@@ -47,15 +39,46 @@ class StorageService {
     }
 
     static async init() {
-        langCookie.value = await StorageService.getGoogtransCookie();
         browser.cookies.onChanged.addListener(function (changeInfo) {
             if (changeInfo.cause === "overwrite" && changeInfo.cookie.name === "googtrans") {
-                langCookie.value = changeInfo.cookie.value;
-                browser.storage.local.set({ langCookie: langCookie });
+                CachedStorageLocal.save(STORAGE_LANG_KEY, { value: changeInfo.cookie.value });
             }
         });
     }
 
 }
+
+async function getGoogtransCookie() {
+    return CachedStorageLocal.getFromCacheStorageOrDefault(STORAGE_LANG_KEY, "/auto/en");
+}
+
+const cache = [];
+class CachedStorageLocal {
+    static async getFromCacheStorageOrDefault(key, defaultValue) {
+        if (cache[key]) {
+            console.log(">>cache " + key + " " + JSON.stringify(cache[key]));
+            return cache[key];
+        }
+        const item = await browser.storage.local.get(key);
+        if (item[key]) {
+            cache[key] = item[key];
+            console.log(">>storage " + key + " " + JSON.stringify(cache[key]));
+            return item[key];
+        }
+        CachedStorageLocal.save(key, defaultValue);
+        console.log(">>default " + key + " " + JSON.stringify(defaultValue));
+        return defaultValue;
+    }
+
+    static async save(key, value) {
+        cache[key] = value;
+        let objectToStore = {};
+        objectToStore[key] = value;
+        console.log("<<save " + JSON.stringify(objectToStore));
+        return browser.storage.local.set(objectToStore);
+    }
+
+}
+
 
 StorageService.init();
