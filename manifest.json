@@ -23,9 +23,8 @@
     "webRequest",
     "webRequestBlocking",
     "<all_urls>",
-    "*://translate.google.com/*",
-    "*://www.gstatic.com/images/branding/*",
-    "*://www.google.com/images/*"
+    "cookies",
+    "storage"
  ],
  "browser_action": {
     "default_title": "Translate This Page"

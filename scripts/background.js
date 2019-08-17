@@ -18,7 +18,7 @@ function toggleTranslateCurrentDomain(domain, currentTabId) {
   const alwaysTranslateDomain = StorageService.toggleTranslateDomain(domain);
   updateMenuForDomain();
   if (alwaysTranslateDomain) {
-    if(!StorageService.hasCsp(domain)){
+    if (!StorageService.hasCsp(domain)) {
       translateTab(currentTabId);
     } else {
       BrowserService.reloadTab(currentTabId);
@@ -164,8 +164,15 @@ function getDomain(url) {
 
 function translateTab(tabId) {
   setTimeout(function () {
-    browser.tabs.executeScript(tabId, {
-      file: 'scripts/inject_google_translate_content.js'
+    browser.tabs.get(tabId).then(function (tabInfo) {
+      browser.cookies.set({
+        url: tabInfo.url,
+        name: "googtrans",
+        value: langCookie.value
+      });
+      browser.tabs.executeScript(tabId, {
+        file: 'scripts/inject_google_translate_content.js'
+      });
     });
   }, 250);
 }
@@ -183,9 +190,9 @@ function updateMenuForDomain() {
     browser.contextMenus.update("translate-current-page", {
       visible, title
     });
-    if(visible){
-      browser.pageAction.setTitle({tabId, title});
-      browser.browserAction.setTitle({title});
+    if (visible) {
+      browser.pageAction.setTitle({ tabId, title });
+      browser.browserAction.setTitle({ title });
       browser.pageAction.show(tabId);
       browser.browserAction.enable(tabId);
     } else {
@@ -232,6 +239,7 @@ class BrowserService {
 }
 
 let allDomainsData = [];
+
 class StorageService {
   static getDomainDataOrDefaults(domain) {
     let domainData = allDomainsData[domain];
@@ -259,3 +267,21 @@ class StorageService {
   }
 
 }
+
+var langCookie = {
+  value: ""
+}
+
+function gotLangCookie(item) {
+  langCookie.value = item.langCookie.value;
+  browser.cookies.onChanged.addListener(function (changeInfo) {
+    if (changeInfo.cause === "overwrite" && changeInfo.cookie.name === "googtrans") {
+      langCookie.value = changeInfo.cookie.value;
+      browser.storage.local.set({langCookie});
+    }
+  });
+}
+
+browser.storage.local.get("langCookie")
+  .then(gotLangCookie);
+
