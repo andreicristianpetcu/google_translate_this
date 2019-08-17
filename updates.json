@@ -53,6 +53,10 @@
         {
           "version": "2.0.2",
           "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v2.0.2/google_translate_this_page-2.0.2-fx.xpi"
+        },
+        {
+          "version": "2.2.2",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v2.2.2/google_translate_this_page-2.2.2-fx.xpi"
         }
       ]
     }
