@@ -14,20 +14,13 @@ function showPageActionOnTab(tabInfo) {
   }
 }
 
-let alwaysTranslateDomains = [];
-function shouldAlwaysTranslate(domain){
-  return !!alwaysTranslateDomains[domain];
-}
-function toggleTranslateCurrentDomain(domain, currentTabId){
-  alwaysTranslateDomains[domain] = !alwaysTranslateDomains[domain];
+function toggleTranslateCurrentDomain(domain, currentTabId) {
+  const alwaysTranslateDomain = StorageService.toggleTranslateDomain(domain);
   updateMenuForDomain();
-  if(alwaysTranslateDomains[domain]){
+  if (alwaysTranslateDomain) {
     translateTab(currentTabId);
   } else {
-    browser.tabs.executeScript(
-      currentTabId, {
-      code: `window.location = window.location; ""`
-    });
+    BrowserService.reloadTab(currentTabId);
   }
 }
 
@@ -149,7 +142,7 @@ function rewriteCSPHeader(e) {
 
 function insertOrAppend(typeOfContent, domain, oldValue, defaultSrc) {
   if (!oldValue[typeOfContent]) {
-    if(defaultSrc){
+    if (defaultSrc) {
       oldValue[typeOfContent] = defaultSrc.slice();
     } else {
       oldValue[typeOfContent] = ["'self'"];
@@ -161,25 +154,25 @@ function insertOrAppend(typeOfContent, domain, oldValue, defaultSrc) {
   return oldValue;
 }
 
-function getHost(url){
+function getHost(url) {
   return new URL(url).host;
 }
 
-function translateTab(tabId){
-  setTimeout(function(){
+function translateTab(tabId) {
+  setTimeout(function () {
     browser.tabs.executeScript(tabId, {
       file: 'scripts/inject_google_translate_content.js'
     });
   }, 250);
 }
 
-function updateMenuForDomain(){
+function updateMenuForDomain() {
   browser.tabs.query({
     currentWindow: true,
     active: true
   }, function (foundTabs) {
     const domain = getHost(foundTabs[0].url);
-    const alwaysOrNever = !shouldAlwaysTranslate(domain);
+    const alwaysOrNever = !StorageService.shouldAlwaysTranslate(domain);
     browser.contextMenus.update("translate-current-page", {
       visible: domain.length > 0,
       title: browser.i18n.getMessage("alwaysTranslate-" + alwaysOrNever) + " " + domain
@@ -189,7 +182,7 @@ function updateMenuForDomain(){
 
 function onComplete(e) {
   if (e.type === "main_frame") {
-    if(shouldAlwaysTranslate(getHost(e.url))){
+    if (StorageService.shouldAlwaysTranslate(getHost(e.url))) {
       translateTab(e.tabId);
     }
   }
@@ -205,8 +198,38 @@ function handleUpdated(tabId, changeInfo, tabInfo) {
 
 browser.tabs.onUpdated.addListener(handleUpdated);
 browser.windows.onFocusChanged.addListener(handleUpdated);
-
 browser.webRequest.onCompleted.addListener(
   onComplete,
-  {urls: ["<all_urls>"]}
+  { urls: ["<all_urls>"] }
 );
+
+class BrowserService {
+  static reloadTab(currentTabId) {
+    browser.tabs.executeScript(
+      currentTabId, {
+        code: `window.location = window.location; ""`
+      });
+  }
+}
+
+let allDomainsData = [];
+class StorageService {
+  static getDomainDataOrDefaults(domain) {
+    let domainData = allDomainsData[domain];
+    if (!domainData) {
+      domainData = {
+        shouldAlwaysTranslate: false,
+        hasCSP: false
+      }
+      allDomainsData[domain] = domainData;
+    }
+    return domainData;
+  }
+  static shouldAlwaysTranslate(domain) {
+    return StorageService.getDomainDataOrDefaults(domain).shouldAlwaysTranslate;
+  }
+  static toggleTranslateDomain(domain) {
+    const domainData = this.getDomainDataOrDefaults(domain);
+    return domainData.shouldAlwaysTranslate = !domainData.shouldAlwaysTranslate;
+  }
+}
