@@ -21,7 +21,6 @@ function shouldAlwaysTranslate(domain){
 function toggleTranslateCurrentDomain(domain, currentTabId){
   alwaysTranslateDomains[domain] = !alwaysTranslateDomains[domain];
   updateMenuForDomain();
-  console.log(domain + "=" + alwaysTranslateDomains[domain]);
   if(alwaysTranslateDomains[domain]){
     translateTab(currentTabId);
   } else {
