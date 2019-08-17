@@ -9,7 +9,7 @@ function protocolIsApplicable(url) {
 }
 
 function showPageActionOnTab(tabInfo) {
-  if (protocolIsApplicable(tabInfo.url) && NOT_ANDROID) {
+  if (NOT_ANDROID && protocolIsApplicable(tabInfo.url)) {
     browser.pageAction.show(tabInfo.id);
   }
 }
@@ -40,45 +40,6 @@ function translateCurrentPage() {
 }
 
 browser.browserAction.onClicked.addListener(translateCurrentPage);
-
-if (NOT_ANDROID) {
-  browser.commands.onCommand.addListener(function (action) {
-    if (action == "translate-current-page") {
-      translateCurrentPage();
-    }
-  });
-
-  browser.contextMenus.onClicked.addListener(function (info, tab) {
-    if (info.menuItemId == "translate-current-page") {
-      translateCurrentPage();
-    }
-  });
-
-  browser.contextMenus.create({
-    id: "translate-current-page",
-    title: browser.i18n.getMessage("translateCurrentPage"),
-    contexts: ["all"]
-  });
-
-  browser.browserAction.setIcon({
-    "path": {
-      "19": "images/icon-19.png",
-      "38": "images/icon-38.png"
-    }
-  });
-
-  browser.pageAction.onClicked.addListener(translateCurrentPage);
-  browser.tabs.query({}).then((tabs) => {
-    var tab;
-    for (tab of tabs) {
-      showPageActionOnTab(tab);
-    }
-  });
-
-  browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
-    showPageActionOnTab(tab);
-  });
-}
 
 function parseCsp(policy) {
   return policy.split(';').reduce((result, directive) => {
@@ -219,8 +180,44 @@ function handleUpdated(tabId, changeInfo, tabInfo) {
 }
 
 browser.tabs.onUpdated.addListener(handleUpdated);
-if(NOT_ANDROID){
+if (NOT_ANDROID) {
   browser.windows.onFocusChanged.addListener(handleUpdated);
+  browser.commands.onCommand.addListener(function (action) {
+    if (action == "translate-current-page") {
+      translateCurrentPage();
+    }
+  });
+
+  browser.contextMenus.onClicked.addListener(function (info, tab) {
+    if (info.menuItemId == "translate-current-page") {
+      translateCurrentPage();
+    }
+  });
+
+  browser.contextMenus.create({
+    id: "translate-current-page",
+    title: browser.i18n.getMessage("translateCurrentPage"),
+    contexts: ["all"]
+  });
+
+  browser.browserAction.setIcon({
+    "path": {
+      "19": "images/icon-19.png",
+      "38": "images/icon-38.png"
+    }
+  });
+
+  browser.pageAction.onClicked.addListener(translateCurrentPage);
+  browser.tabs.query({}).then((tabs) => {
+    var tab;
+    for (tab of tabs) {
+      showPageActionOnTab(tab);
+    }
+  });
+
+  browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
+    showPageActionOnTab(tab);
+  });
 }
 
 browser.webRequest.onCompleted.addListener(
