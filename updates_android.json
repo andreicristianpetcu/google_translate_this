@@ -1,0 +1,12 @@
+{
+  "addons": {
+    "{e34d5840-6b3b-49d8-92c2-9696798c4e2a}": {
+      "updates": [
+        {
+          "version": "2.1.1",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v2.1.1/google_translate_this_page-2.1.1-fx.xpi"
+        }
+      ]
+    }
+  }
+}
