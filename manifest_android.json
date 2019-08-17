@@ -1,0 +1,43 @@
+{
+  "name": "__MSG_appName__",
+  "version": "2.1.02",
+  "homepage_url": "https://github.com/andreicristianpetcu/google_translate_this",
+  "manifest_version": 2,
+  "description": "__MSG_appDescription__",
+  "icons": {
+    "16": "images/icon-16.png",
+    "48": "images/icon-48.png",
+    "96": "images/icon-96.png",
+    "128": "images/icon-128.png"
+  },
+  "default_locale": "en",
+  "background": {
+    "scripts": [
+      "scripts/StorageService.js",
+      "scripts/background.js"
+    ]
+  },
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>",
+    "cookies",
+    "storage"
+  ],
+  "browser_action": {
+    "default_title": "Translate This Page"
+  },
+  "page_action": {
+		"default_icon": "images/icon-128.png",
+    "browser_style": true,
+    "default_title": "Translate this page"
+  },
+  "applications": {
+    "gecko": {
+      "id": "{e34d5840-6b3b-49d8-92c2-9696798c4e2a}",
+      "update_url": "https://raw.githubusercontent.com/andreicristianpetcu/google_translate_this/master/updates.json"
+    }
+  }
+}

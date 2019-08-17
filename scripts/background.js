@@ -1,5 +1,7 @@
 const APPLICABLE_PROTOCOLS = ["http:", "https:"];
 
+const NOT_ANDROID = navigator.userAgent.toLocaleLowerCase().indexOf("android") === -1;
+
 function protocolIsApplicable(url) {
   var anchor = document.createElement('a');
   anchor.href = url;
@@ -7,7 +9,7 @@ function protocolIsApplicable(url) {
 }
 
 function showPageActionOnTab(tabInfo) {
-  if (protocolIsApplicable(tabInfo.url)) {
+  if (protocolIsApplicable(tabInfo.url) && NOT_ANDROID) {
     browser.pageAction.show(tabInfo.id);
   }
 }
@@ -37,46 +39,46 @@ function translateCurrentPage() {
   });
 }
 
-browser.commands.onCommand.addListener(function (action) {
-  if (action == "translate-current-page") {
-    translateCurrentPage();
-  }
-});
+browser.browserAction.onClicked.addListener(translateCurrentPage);
 
-browser.contextMenus.onClicked.addListener(function (info, tab) {
-  if (info.menuItemId == "translate-current-page") {
-    translateCurrentPage();
-  }
-});
+if (NOT_ANDROID) {
+  browser.commands.onCommand.addListener(function (action) {
+    if (action == "translate-current-page") {
+      translateCurrentPage();
+    }
+  });
 
-browser.contextMenus.create({
-  id: "translate-current-page",
-  title: browser.i18n.getMessage("translateCurrentPage"),
-  contexts: ["all"]
-});
+  browser.contextMenus.onClicked.addListener(function (info, tab) {
+    if (info.menuItemId == "translate-current-page") {
+      translateCurrentPage();
+    }
+  });
 
-if (browser.browserAction) {
+  browser.contextMenus.create({
+    id: "translate-current-page",
+    title: browser.i18n.getMessage("translateCurrentPage"),
+    contexts: ["all"]
+  });
+
   browser.browserAction.setIcon({
     "path": {
       "19": "images/icon-19.png",
       "38": "images/icon-38.png"
     }
   });
-  browser.browserAction.onClicked.addListener(translateCurrentPage);
-}
 
+  browser.pageAction.onClicked.addListener(translateCurrentPage);
+  browser.tabs.query({}).then((tabs) => {
+    var tab;
+    for (tab of tabs) {
+      showPageActionOnTab(tab);
+    }
+  });
 
-browser.pageAction.onClicked.addListener(translateCurrentPage);
-browser.tabs.query({}).then((tabs) => {
-  var tab;
-  for (tab of tabs) {
+  browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
     showPageActionOnTab(tab);
-  }
-});
-
-browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
-  showPageActionOnTab(tab);
-});
+  });
+}
 
 function parseCsp(policy) {
   return policy.split(';').reduce((result, directive) => {
@@ -182,17 +184,19 @@ async function updateMenuForDomain() {
     const alwaysOrNever = await StorageService.shouldAlwaysTranslate(domain);
     const title = browser.i18n.getMessage("alwaysTranslate-" + !alwaysOrNever) + " " + domain;
     const visible = domain.length > 0;
-    browser.contextMenus.update("translate-current-page", {
-      visible, title
-    });
-    if (visible) {
-      browser.pageAction.setTitle({ tabId, title });
-      browser.browserAction.setTitle({ title });
-      browser.pageAction.show(tabId);
-      browser.browserAction.enable(tabId);
-    } else {
-      browser.pageAction.hide(tabId);
-      browser.browserAction.disable(tabId);
+    if (NOT_ANDROID) {
+      browser.contextMenus.update("translate-current-page", {
+        visible, title
+      });
+      if (visible) {
+        browser.pageAction.setTitle({ tabId, title });
+        browser.browserAction.setTitle({ title });
+        browser.pageAction.show(tabId);
+        browser.browserAction.enable(tabId);
+      } else {
+        browser.pageAction.hide(tabId);
+        browser.browserAction.disable(tabId);
+      }
     }
   });
 }
@@ -215,7 +219,10 @@ function handleUpdated(tabId, changeInfo, tabInfo) {
 }
 
 browser.tabs.onUpdated.addListener(handleUpdated);
-browser.windows.onFocusChanged.addListener(handleUpdated);
+if(NOT_ANDROID){
+  browser.windows.onFocusChanged.addListener(handleUpdated);
+}
+
 browser.webRequest.onCompleted.addListener(
   onComplete,
   { urls: ["<all_urls>"] }
