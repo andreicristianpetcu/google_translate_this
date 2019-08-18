@@ -178,14 +178,14 @@ function getDomain(url) {
 }
 
 function translateTab(tabId) {
-  setTimeout(function () {
-    browser.tabs.get(tabId).then(function (tabInfo) {
-      StorageService.setLangCookie(tabInfo.url);
-      browser.tabs.executeScript(tabId, {
+  browser.tabs.get(tabId).then(async function (tabInfo) {
+    await StorageService.setLangCookie(tabInfo.url, tabInfo.cookieStoreId);
+    setTimeout(function () {
+      return browser.tabs.executeScript(tabId, {
         file: 'scripts/inject_google_translate_content.js'
       });
-    });
-  }, 250);
+    }, 250);
+  });
 }
 
 async function updateMenuForDomain() {

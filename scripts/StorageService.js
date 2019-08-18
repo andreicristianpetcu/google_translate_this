@@ -33,12 +33,13 @@ class StorageService {
         return domainData.hasCSP;
     }
 
-    static async setLangCookie(domain) {
+    static async setLangCookie(domain, storeId) {
         const langCookie = await getGoogtransCookie();
-        browser.cookies.set({
+        await browser.cookies.set({   
             url: domain,
             name: "googtrans",
-            value: langCookie.value
+            value: langCookie.value,
+            storeId
         });
     }
 
