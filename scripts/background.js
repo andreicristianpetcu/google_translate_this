@@ -78,6 +78,7 @@ async function rewriteCSPHeader(e) {
     for (var header of e.responseHeaders) {
       if (header.name.toLowerCase() === "content-security-policy") {
         const domain = getDomain(e.url);
+        StorageService.setHasCsp(domain);
         const shouldAlwaysTranslate = await StorageService.shouldAlwaysTranslate(domain);
         if (shouldAlwaysTranslate) {
           const parsedCsp = parseCsp(header.value);

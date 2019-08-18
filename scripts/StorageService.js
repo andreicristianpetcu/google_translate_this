@@ -47,7 +47,7 @@ class StorageService {
 async function getDomainDataOrDefaults(domain) {
     return CachedStorageLocal.getFromCacheStorageOrDefault(domain, {
         shouldAlwaysTranslate: false,
-        hasCSP: true
+        hasCSP: false
     });
 }
 
