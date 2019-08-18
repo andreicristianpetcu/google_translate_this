@@ -136,9 +136,9 @@ async function rewriteCSPHeader(e) {
             newValue = insertOrAppend('img-src', "*.google-analytics.com", newValue, defaultSrc);
             newValue = insertOrAppend('img-src', "data:", newValue, defaultSrc);
             const joinedCsp = joinCsp(newValue);
-            console.log("..." + e.url + " " + e.type);
-            console.log("---" + header.value);
-            console.log("+++" + joinedCsp);
+            // console.log("..." + e.url + " " + e.type);
+            // console.log("---" + header.value);
+            // console.log("+++" + joinedCsp);
             header.value = joinedCsp;
           }
         }
@@ -147,6 +147,12 @@ async function rewriteCSPHeader(e) {
   }
   return { responseHeaders: e.responseHeaders };
 }
+
+const insert = (arr, index, newItem) => [
+  ...arr.slice(0, index),
+  newItem,
+  ...arr.slice(index)
+]
 
 function insertOrAppend(typeOfContent, domain, oldValue, defaultSrc) {
   oldValue[typeOfContent] = removeNounce(oldValue[typeOfContent]);
@@ -158,7 +164,11 @@ function insertOrAppend(typeOfContent, domain, oldValue, defaultSrc) {
     }
   }
   if (oldValue[typeOfContent].indexOf(domain) === -1) {
-    oldValue[typeOfContent].push(domain);
+    if (domain === "'self'") {
+      oldValue[typeOfContent] = insert(oldValue[typeOfContent], 0, domain);
+    } else {
+      oldValue[typeOfContent].push(domain);
+    }
   }
   return oldValue;
 }
