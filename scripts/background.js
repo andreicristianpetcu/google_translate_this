@@ -109,17 +109,22 @@ async function rewriteCSPHeader(e) {
           const parsedCsp = parseCsp(header.value);
           if (shouldModify(parsedCsp)) {
             const defaultSrc = parsedCsp['default-src'];
-            var translateStaticLocation = "translate.googleapis.com";
             let newValue = parsedCsp;
             newValue = insertOrAppend('script-src', "'self'", newValue, defaultSrc);
             newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue, defaultSrc);
             newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue, defaultSrc);
-            newValue = insertOrAppend('script-src', translateStaticLocation, newValue, defaultSrc);
-            newValue = insertOrAppend('connect-src', translateStaticLocation, newValue);
+            newValue = insertOrAppend('script-src', "translate.googleapis.com", newValue, defaultSrc);
+            //google sites
+            newValue = insertOrAppend('script-src', "www.google.com", newValue, defaultSrc);
+            newValue = insertOrAppend('script-src', "apis.google.com", newValue, defaultSrc);
+            newValue = insertOrAppend('script-src', "*.gstatic.com", newValue, defaultSrc);
+            newValue = insertOrAppend('script-src', "www.google-analytics.com", newValue, defaultSrc);
+
+            newValue = insertOrAppend('connect-src', "translate.googleapis.com", newValue);
             newValue = insertOrAppend('style-src', "'self'", newValue, defaultSrc);
             newValue = insertOrAppend('style-src', "'unsafe-inline'", newValue, defaultSrc);
-            newValue = insertOrAppend('style-src', translateStaticLocation, newValue, defaultSrc);
-            newValue = insertOrAppend('img-src', translateStaticLocation, newValue, defaultSrc);
+            newValue = insertOrAppend('style-src', "translate.googleapis.com", newValue, defaultSrc);
+            newValue = insertOrAppend('img-src', "translate.googleapis.com", newValue, defaultSrc);
             newValue = insertOrAppend('img-src', "translate.google.com", newValue, defaultSrc);
             newValue = insertOrAppend('img-src', "www.gstatic.com", newValue, defaultSrc);
             newValue = insertOrAppend('img-src', "www.google.com", newValue, defaultSrc);
@@ -127,7 +132,6 @@ async function rewriteCSPHeader(e) {
             console.log("..." + e.url + " " + e.type);
             console.log("---" + header.value);
             console.log("+++" + joinedCsp);
-            console.log(header.value === joinedCsp);
             header.value = joinedCsp;
           }
         }
