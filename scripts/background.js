@@ -114,6 +114,7 @@ async function rewriteCSPHeader(e) {
             newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue, defaultSrc);
             newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue, defaultSrc);
             newValue = insertOrAppend('script-src', "*.googleapis.com", newValue, defaultSrc);
+            newValue = insertOrAppend('script-src', "translate.googleapis.com", newValue, defaultSrc);
             //google sites
             newValue = insertOrAppend('script-src', "*.google.com", newValue, defaultSrc);
             newValue = insertOrAppend('script-src', "*.gstatic.com", newValue, defaultSrc);
@@ -133,6 +134,7 @@ async function rewriteCSPHeader(e) {
             newValue = insertOrAppend('img-src', "*.googleusercontent.com", newValue, defaultSrc);
             newValue = insertOrAppend('img-src', "*.youtube.com", newValue, defaultSrc);
             newValue = insertOrAppend('img-src', "*.google-analytics.com", newValue, defaultSrc);
+            newValue = insertOrAppend('img-src', "data:", newValue, defaultSrc);
             const joinedCsp = joinCsp(newValue);
             console.log("..." + e.url + " " + e.type);
             console.log("---" + header.value);
