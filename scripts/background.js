@@ -73,6 +73,20 @@ function joinCsp(parsedCsp) {
   return directives.join('; ');
 }
 
+function removeNounce(directiveValues) {
+  if (directiveValues) {
+    let cleanedValues = [];
+    for (let value of directiveValues) {
+      if (value.indexOf('nonce-') == -1) {
+        cleanedValues.push(value);
+      }
+    }
+    return cleanedValues;
+  } else {
+    return directiveValues
+  }
+}
+
 async function rewriteCSPHeader(e) {
   if (e.type === "main_frame") {
     for (var header of e.responseHeaders) {
@@ -95,10 +109,10 @@ async function rewriteCSPHeader(e) {
           newValue = insertOrAppend('img-src', "www.gstatic.com", newValue, defaultSrc);
           newValue = insertOrAppend('img-src', "www.google.com", newValue, defaultSrc);
           const joinedCsp = joinCsp(newValue);
-          // console.log("..." + e.url + " " + e.type);
-          // console.log("---" + header.value);
-          // console.log("+++" + joinedCsp);
-          // console.log(header.value === joinedCsp);
+          console.log("..." + e.url + " " + e.type);
+          console.log("---" + header.value);
+          console.log("+++" + joinedCsp);
+          console.log(header.value === joinedCsp);
           header.value = joinedCsp;
         }
       }
@@ -108,6 +122,7 @@ async function rewriteCSPHeader(e) {
 }
 
 function insertOrAppend(typeOfContent, domain, oldValue, defaultSrc) {
+  oldValue[typeOfContent] = removeNounce(oldValue[typeOfContent]);
   if (!oldValue[typeOfContent]) {
     if (defaultSrc) {
       oldValue[typeOfContent] = defaultSrc.slice();
