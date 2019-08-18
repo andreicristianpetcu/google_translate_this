@@ -87,6 +87,14 @@ function removeNounce(directiveValues) {
   }
 }
 
+function shouldModify(parsedCsp) {
+  const keys = Object.keys(parsedCsp);
+  if (keys.length == 1 && keys.indexOf("frame-ancestors") > -1) {
+    return false;
+  }
+  return true;
+}
+
 async function rewriteCSPHeader(e) {
   if (e.type === "main_frame") {
     for (var header of e.responseHeaders) {
@@ -96,24 +104,29 @@ async function rewriteCSPHeader(e) {
         const shouldAlwaysTranslate = await StorageService.shouldAlwaysTranslate(domain);
         if (shouldAlwaysTranslate) {
           const parsedCsp = parseCsp(header.value);
-          const defaultSrc = parsedCsp['default-src'];
-          var translateStaticLocation = "translate.googleapis.com";
-          let newValue = parsedCsp;
-          newValue = insertOrAppend('script-src', translateStaticLocation, newValue, defaultSrc);
-          newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue, defaultSrc);
-          newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue, defaultSrc);
-          newValue = insertOrAppend('connect-src', translateStaticLocation, newValue);
-          newValue = insertOrAppend('style-src', translateStaticLocation, newValue, defaultSrc);
-          newValue = insertOrAppend('img-src', translateStaticLocation, newValue, defaultSrc);
-          newValue = insertOrAppend('img-src', "translate.google.com", newValue, defaultSrc);
-          newValue = insertOrAppend('img-src', "www.gstatic.com", newValue, defaultSrc);
-          newValue = insertOrAppend('img-src', "www.google.com", newValue, defaultSrc);
-          const joinedCsp = joinCsp(newValue);
-          console.log("..." + e.url + " " + e.type);
-          console.log("---" + header.value);
-          console.log("+++" + joinedCsp);
-          console.log(header.value === joinedCsp);
-          header.value = joinedCsp;
+          if (shouldModify(parsedCsp)) {
+            const defaultSrc = parsedCsp['default-src'];
+            var translateStaticLocation = "translate.googleapis.com";
+            let newValue = parsedCsp;
+            newValue = insertOrAppend('script-src', "'self'", newValue, defaultSrc);
+            newValue = insertOrAppend('script-src', "'unsafe-inline'", newValue, defaultSrc);
+            newValue = insertOrAppend('script-src', "'unsafe-eval'", newValue, defaultSrc);
+            newValue = insertOrAppend('script-src', translateStaticLocation, newValue, defaultSrc);
+            newValue = insertOrAppend('connect-src', translateStaticLocation, newValue);
+            newValue = insertOrAppend('style-src', "'self'", newValue, defaultSrc);
+            newValue = insertOrAppend('style-src', "'unsafe-inline'", newValue, defaultSrc);
+            newValue = insertOrAppend('style-src', translateStaticLocation, newValue, defaultSrc);
+            newValue = insertOrAppend('img-src', translateStaticLocation, newValue, defaultSrc);
+            newValue = insertOrAppend('img-src', "translate.google.com", newValue, defaultSrc);
+            newValue = insertOrAppend('img-src', "www.gstatic.com", newValue, defaultSrc);
+            newValue = insertOrAppend('img-src', "www.google.com", newValue, defaultSrc);
+            const joinedCsp = joinCsp(newValue);
+            console.log("..." + e.url + " " + e.type);
+            console.log("---" + header.value);
+            console.log("+++" + joinedCsp);
+            console.log(header.value === joinedCsp);
+            header.value = joinedCsp;
+          }
         }
       }
     }
@@ -127,7 +140,7 @@ function insertOrAppend(typeOfContent, domain, oldValue, defaultSrc) {
     if (defaultSrc) {
       oldValue[typeOfContent] = defaultSrc.slice();
     } else {
-      oldValue[typeOfContent] = ["'self'"];
+      oldValue[typeOfContent] = [];
     }
   }
   if (oldValue[typeOfContent].indexOf(domain) === -1) {
