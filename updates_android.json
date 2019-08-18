@@ -9,6 +9,10 @@
         {
           "version": "2.2.9",
           "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v2.2.9/google_translate_this_page-2.2.9-an.xpi"
+        },
+        {
+          "version": "2.2.10",
+          "update_link": "https://github.com/andreicristianpetcu/google_translate_this/releases/download/v2.2.10/google_translate_this_page-2.2.10-an.xpi"
         }
      ]
     }
