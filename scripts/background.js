@@ -88,11 +88,14 @@ function removeNounce(directiveValues) {
 }
 
 function shouldModify(parsedCsp) {
+  const modifyList = ['default-src', 'script-src', 'connect-src', 'style-src', 'img-src'];
   const keys = Object.keys(parsedCsp);
-  if (keys.length == 1 && keys.indexOf("frame-ancestors") > -1) {
-    return false;
+  for (let modifiableDirective of modifyList) {
+    if (keys.indexOf(modifiableDirective) > -1) {
+      return true;
+    }
   }
-  return true;
+  return false;
 }
 
 async function rewriteCSPHeader(e) {
