@@ -1,7 +1,9 @@
 # Google Translate This
-[This WebExtension](https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.4.0/google_translate_this_page-1.4.0-fx.xpi) translates the current page with Google Translate. It does so on demand so it does not change the page unless the user selected this.
+This WebExtension translates the current page with Google Translate. It does so on demand so it does not change the page unless the user selected this.
 
-[Click here to install](https://github.com/andreicristianpetcu/google_translate_this/releases/download/v1.4.0/google_translate_this_page-1.4.0-fx.xpi)
+[Desktop install](https://github.com/andreicristianpetcu/google_translate_this/releases/download/v2.2.8/google_translate_this_page-2.2.8-fx.xpi)
+
+[Android install](https://github.com/andreicristianpetcu/google_translate_this/releases/download/v2.2.8/google_translate_this_page-2.2.8-an.xpi)
 
 ![Alt text](https://raw.githubusercontent.com/andreicristianpetcu/google_translate_this/master/images/google_translate_this_print_screen.png)
 
