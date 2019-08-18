@@ -16,7 +16,6 @@ echo "
 #build desktop
 cat manifest.json | grep version
 zip tr_desktop.zip manifest.json scripts/* images/* _locales/**/*
-xdg-open https://addons.mozilla.org/en-US/developers/addon/60f12ab296874cd39fef/versions
 
 #build android
 cp manifest.json manifest_desktop.json
@@ -25,4 +24,7 @@ cat manifest.json | grep version
 zip tr_android.zip manifest.json scripts/* images/* _locales/**/*
 cp manifest_desktop.json manifest.json
 rm -rf manifest_desktop.json
+
+xdg-open https://addons.mozilla.org/en-US/developers/addon/60f12ab296874cd39fef/versions
 xdg-open https://addons.mozilla.org/en-US/developers/addon/google-translate-this-page1/versions
+xdg-open https://github.com/andreicristianpetcu/google_translate_this/releases
