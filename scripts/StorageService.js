@@ -10,6 +10,11 @@ class StorageService {
         });
     }
 
+    static async getAlwaysTranslateStatus(url) {
+        const domainData = await getDomainDataOrDefaults(domain); 
+        return domainData.shouldAlwaysTranslate;
+    }
+
     static async shouldAlwaysTranslate(domain) {
         const domainData = await getDomainDataOrDefaults(domain); 
         return domainData.shouldAlwaysTranslate;

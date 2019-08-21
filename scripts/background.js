@@ -177,9 +177,15 @@ function getDomain(url) {
   return new URL(url).host;
 }
 
+function isBasedOnHttp(url) {
+  return new URL(url).protocol.indexOf("http") > -1;
+}
+
 function translateTab(tabId) {
   browser.tabs.get(tabId).then(async function (tabInfo) {
-    await StorageService.setLangCookie(tabInfo.url, tabInfo.cookieStoreId);
+    if (isBasedOnHttp(tabInfo.url)) {
+      await StorageService.setLangCookie(tabInfo.url, tabInfo.cookieStoreId);
+    }
     setTimeout(function () {
       return browser.tabs.executeScript(tabId, {
         file: 'scripts/inject_google_translate_content.js'
@@ -198,7 +204,7 @@ async function updateMenuForDomain() {
     const alwaysOrNever = await StorageService.shouldAlwaysTranslate(domain);
     const title = browser.i18n.getMessage("alwaysTranslate-" + !alwaysOrNever) + " " + domain;
     const visible = domain.length > 0;
-    if (NOT_ANDROID) {
+    if (NOT_ANDROID && isBasedOnHttp(foundTabs[0].url)) {
       browser.contextMenus.update("translate-current-page", {
         visible, title
       });
