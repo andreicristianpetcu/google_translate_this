@@ -204,7 +204,7 @@ async function updateMenuForDomain() {
     const alwaysOrNever = await StorageService.shouldAlwaysTranslate(domain);
     const title = browser.i18n.getMessage("alwaysTranslate-" + !alwaysOrNever) + " " + domain;
     const visible = domain.length > 0;
-    if (NOT_ANDROID && isBasedOnHttp(foundTabs[0].url)) {
+    if (NOT_ANDROID) {
       browser.contextMenus.update("translate-current-page", {
         visible, title
       });
@@ -222,11 +222,9 @@ async function updateMenuForDomain() {
 }
 
 async function onComplete(e) {
-  if (e.type === "main_frame") {
-    const shouldAlwaysTranslate = await StorageService.shouldAlwaysTranslate(getDomain(e.url));
-    if (shouldAlwaysTranslate) {
-      translateTab(e.tabId);
-    }
+  const shouldAlwaysTranslate = await StorageService.shouldAlwaysTranslate(getDomain(e.url));
+  if (shouldAlwaysTranslate) {
+    translateTab(e.tabId);
   }
 }
 
@@ -279,9 +277,8 @@ if (NOT_ANDROID) {
   });
 }
 
-browser.webRequest.onCompleted.addListener(
-  onComplete,
-  { urls: ["<all_urls>"] }
+browser.webNavigation.onCompleted.addListener(onComplete,
+  { url: [{ schemes: ["http", "https", "ftp", "ftps"] }] }
 );
 
 browser.webRequest.onHeadersReceived.addListener(rewriteCSPHeader,
