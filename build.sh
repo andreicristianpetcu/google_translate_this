@@ -2,6 +2,9 @@ version=$1
 
 sed -i -E "s/\"version\":(.*)/\"version\": \"$version\",/" manifest.json
 sed -i -E "s/\"version\":(.*)/\"version\": \"$version\",/" manifest_android.json
+cat rm_template.md > README.md
+sed -i -E "s/NEW_VERSION/$version/" README.md
+
 echo "
         {
           \"version\": \"$version\",
@@ -18,11 +21,11 @@ cat manifest.json | grep version
 zip tr_desktop.zip manifest.json scripts/* images/* _locales/**/*
 
 #build android
-cp manifest.json manifest_desktop.json
-cp manifest_android.json manifest.json
+cat manifest.json > manifest_desktop.json
+cat manifest_android.json > manifest.json
 cat manifest.json | grep version
 zip tr_android.zip manifest.json scripts/* images/* _locales/**/*
-cp manifest_desktop.json manifest.json
+cat manifest_desktop.json > manifest.json
 rm -rf manifest_desktop.json
 
 xdg-open https://addons.mozilla.org/en-US/developers/addon/60f12ab296874cd39fef/versions
