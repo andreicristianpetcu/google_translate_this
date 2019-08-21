@@ -5,16 +5,31 @@ sed -i -E "s/\"version\":(.*)/\"version\": \"$version\",/" manifest_android.json
 cat rm_template.md > README.md
 sed -i -E "s/NEW_VERSION/$version/" README.md
 
-echo "
-        {
+sed -i "/$version/d" versions.txt
+
+echo '{
+  "addons": {
+    "{e34d5840-6b3b-49d8-92c2-9696798c4e2a}": {
+      "updates": [' > updates_android.json
+
+while IFS= read -r old_version
+do
+echo "        {
+          \"version\": \"$old_version\",
+          \"update_link\": \"https://github.com/andreicristianpetcu/google_translate_this/releases/download/v$old_version/google_translate_this_page-$old_version-an.xpi\"
+        }," >> updates_android.json 
+done < versions.txt
+
+printf "$version\n" >> versions.txt
+echo "        {
           \"version\": \"$version\",
           \"update_link\": \"https://github.com/andreicristianpetcu/google_translate_this/releases/download/v$version/google_translate_this_page-$version-an.xpi\"
-        }" >> updates_android.json 
-echo "
-        {
-          \"version\": \"$version\",
-          \"update_link\": \"https://github.com/andreicristianpetcu/google_translate_this/releases/download/v$version/google_translate_this_page-$version-fx.xpi\"
-        }" >> updates.json 
+        }
+     ]
+    }
+  }
+}" >> updates_android.json
+
 
 #build desktop
 cat manifest.json | grep version
