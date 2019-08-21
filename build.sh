@@ -55,6 +55,10 @@ zip tr_android.zip manifest.json scripts/* images/* _locales/**/*
 cat manifest_desktop.json > manifest.json
 rm -rf manifest_desktop.json
 
+git add .
+git commit -m "Release v$version"
+git tag "v$version"
+
 xdg-open https://addons.mozilla.org/en-US/developers/addon/60f12ab296874cd39fef/versions
 xdg-open https://addons.mozilla.org/en-US/developers/addon/google-translate-this-page1/versions
 xdg-open https://github.com/andreicristianpetcu/google_translate_this/releases
