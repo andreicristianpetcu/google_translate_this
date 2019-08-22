@@ -35,7 +35,7 @@ generate_update_json() {
 }" >>"$update_file_name"
 }
 
-sed -i -E "s/\"version\":(.*)/\"version\": \"$version\",/" manifest.json
+sed -i -E "s/\"version\":(.*)/\"version\": \"$version\",/" manifest_desktop.json
 sed -i -E "s/\"version\":(.*)/\"version\": \"$version\",/" manifest_android.json
 cat rm_template.md > README.md
 sed -i -E "s/NEW_VERSION/$version/" README.md
@@ -44,20 +44,20 @@ generate_update_json "$version" "android"
 generate_update_json "$version" "desktop"
 
 #build desktop
-cat manifest.json | grep version
+cat manifest_desktop.json > manifest.json
+web-ext lint -s . --self-hosted -i "*.sh"
 zip tr_desktop.zip manifest.json scripts/* images/* _locales/**/*
+rm -rf manifest.json
 
 #build android
-cat manifest.json > manifest_desktop.json
 cat manifest_android.json > manifest.json
-cat manifest.json | grep version
+web-ext lint -s . --self-hosted -i "*.sh"
 zip tr_android.zip manifest.json scripts/* images/* _locales/**/*
-cat manifest_desktop.json > manifest.json
-rm -rf manifest_desktop.json
+rm -rf manifest.json
 
-git add .
-git commit -m "Release v$version"
-git tag "v$version"
+# git add .
+# git commit -m "Release v$version"
+# git tag "v$version"
 
 xdg-open https://addons.mozilla.org/en-US/developers/addon/60f12ab296874cd39fef/versions
 xdg-open https://addons.mozilla.org/en-US/developers/addon/google-translate-this-page1/versions

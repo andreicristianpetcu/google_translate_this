@@ -24,7 +24,8 @@
     "webRequestBlocking",
     "<all_urls>",
     "cookies",
-    "storage"
+    "storage",
+    "webNavigation"
   ],
   "browser_action": {
     "default_title": "Translate This Page"
