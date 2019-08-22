@@ -39,6 +39,7 @@ sed -i -E "s/\"version\":(.*)/\"version\": \"$version\",/" manifest_desktop.json
 sed -i -E "s/\"version\":(.*)/\"version\": \"$version\",/" manifest_android.json
 cat rm_template.md > README.md
 sed -i -E "s/NEW_VERSION/$version/" README.md
+sed -i -E "s/NEW_VERSION/$version/" README.md
 
 generate_update_json "$version" "android"
 generate_update_json "$version" "desktop"
