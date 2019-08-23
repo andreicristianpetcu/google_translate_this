@@ -64,23 +64,32 @@ async function getGoogtransCookie() {
 const cache = [];
 class CachedStorageLocal {
     static async getFromCacheStorageOrDefault(key, defaultValue) {
-        if (cache[key]) {
-            return cache[key];
+        // if(!!cache[key]){
+        //     return cache[key];
+        // }
+        let item = await this.getStorage().get(key);
+        item = item[key];
+        if (!item) {
+            item = defaultValue;
+            CachedStorageLocal.save(key, item);
         }
-        const item = await browser.storage.local.get(key);
-        if (item[key]) {
-            cache[key] = item[key];
-            return item[key];
-        }
-        CachedStorageLocal.save(key, defaultValue);
-        return defaultValue;
+        cache[key] = item;
+        return item;
     }
 
     static async save(key, value) {
         cache[key] = value;
         let objectToStore = {};
         objectToStore[key] = value;
-        return browser.storage.local.set(objectToStore);
+        return this.getStorage().set(objectToStore);
+    }
+
+    static getStorage(){
+        if(!!browser.storage.sync){
+            return browser.storage.sync;
+        } else {
+            return browser.storage.local;
+        }
     }
 
 }
