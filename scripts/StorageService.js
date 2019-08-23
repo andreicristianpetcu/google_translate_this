@@ -61,19 +61,14 @@ async function getGoogtransCookie() {
     return CachedStorageLocal.getFromCacheStorageOrDefault(STORAGE_LANG_KEY, "/auto/en");
 }
 
-const cache = [];
 class CachedStorageLocal {
     static async getFromCacheStorageOrDefault(key, defaultValue) {
-        // if(!!cache[key]){
-        //     return cache[key];
-        // }
         let item = await this.getStorage().get(key);
         item = item[key];
         if (!item) {
             item = defaultValue;
             CachedStorageLocal.save(key, item);
         }
-        cache[key] = item;
         return item;
     }
 
