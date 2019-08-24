@@ -47,13 +47,13 @@ generate_update_json "$version" "desktop"
 #build desktop
 cat manifest_desktop.json > manifest.json
 web-ext lint -s . --self-hosted -i "*.sh"
-zip tr_desktop.zip manifest.json scripts/* images/* _locales/**/*
+zip tr_desktop.zip manifest.json scripts/* images/* _locales/**/* options/*
 rm -rf manifest.json
 
 #build android
 cat manifest_android.json > manifest.json
 web-ext lint -s . --self-hosted -i "*.sh"
-zip tr_android.zip manifest.json scripts/* images/* _locales/**/*
+zip tr_android.zip manifest.json scripts/* images/* _locales/**/* options/*
 rm -rf manifest.json
 
 # git add .
