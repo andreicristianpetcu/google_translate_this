@@ -10,13 +10,13 @@
 <body>
 
   <section class="clear-options">
-    <span class="title">Time range to forget:</span>
-    <select id="since">
-      <option value="hour" selected>Last hour</option>
-      <option value="day">Last day</option>
-      <option value="week">Last week</option>
-      <option value="forever">Forever</option>
-    </select>
+    <span class="title">Translation mode:</span>
+    <span>
+      <select id="translationMode">
+        <option value="alwaysDomain" selected>Always translate domain</option>
+        <option value="oncePage">Translate page only once</option>
+      </select>
+    </span>
   </section>
 
   <input type="button" value="Save preferences" id="save-button" />

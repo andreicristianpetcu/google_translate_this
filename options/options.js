@@ -1,19 +1,19 @@
 function storeSettings() {
 
-  function getSince() {
-    const since = document.querySelector("#since");
-    return since.value;
+  function getTranslationMode() {
+    const translationMode = document.querySelector("#translationMode");
+    return translationMode.value;
   }
 
-  const since = getSince();
+  const translationMode = getTranslationMode();
   browser.storage.local.set({
-    since
+    translationMode
   });
 }
 
 function updateUI(restoredSettings) {
-  const selectList = document.querySelector("#since");
-  selectList.value = restoredSettings.since;
+  const translationModeSelect = document.querySelector("#translationMode");
+  translationModeSelect.value = restoredSettings.translationMode;
 }
 
 function onError(e) {
