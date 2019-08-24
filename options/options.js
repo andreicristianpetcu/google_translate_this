@@ -1,27 +1,32 @@
+function getTranslationMode() {
+  const translationMode = document.querySelector("#translationMode");
+  return translationMode.value;
+}
+
 function storeSettings() {
-
-  function getTranslationMode() {
-    const translationMode = document.querySelector("#translationMode");
-    return translationMode.value;
-  }
-
   const translationMode = getTranslationMode();
-  browser.storage.local.set({
-    translationMode
-  });
+  getStorage().set({ translationMode });
 }
 
-function updateUI(restoredSettings) {
+async function initOptionsPage() {
+  const saveButton = document.querySelector("#save-button");
+  saveButton.addEventListener("click", storeSettings);
+  const restoredSettings = await getStorage().get("translationMode");
   const translationModeSelect = document.querySelector("#translationMode");
-  translationModeSelect.value = restoredSettings.translationMode;
+  if(!!restoredSettings.translationMode) {
+    translationModeSelect.value = restoredSettings.translationMode;
+  } else {
+    translationModeSelect.value = "alwaysDomain";
+    storeSettings();
+  }
 }
 
-function onError(e) {
-  console.error(e);
+function getStorage() {
+  if (!!browser.storage.sync) {
+    return browser.storage.sync;
+  } else {
+    return browser.storage.local;
+  }
 }
 
-const gettingStoredSettings = browser.storage.local.get();
-gettingStoredSettings.then(updateUI, onError);
-
-const saveButton = document.querySelector("#save-button");
-saveButton.addEventListener("click", storeSettings);
+initOptionsPage();
