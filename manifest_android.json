@@ -35,6 +35,9 @@
     "browser_style": true,
     "default_title": "Translate this page"
   },
+  "options_ui": {
+    "page": "options/options.html"
+  },
   "applications": {
     "gecko": {
       "id": "{aaaa5840-6b3b-49d8-92c2-9696798c4e2a}",
