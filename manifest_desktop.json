@@ -44,6 +44,9 @@
       "description": "Translate current domain"
     }
   },
+  "options_ui": {
+    "page": "options/options.html"
+  },
   "applications": {
     "gecko": {
       "id": "{e34d5840-6b3b-49d8-92c2-9696798c4e2a}",
