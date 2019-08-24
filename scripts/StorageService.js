@@ -73,7 +73,6 @@ class CachedStorageLocal {
     }
 
     static async save(key, value) {
-        cache[key] = value;
         let objectToStore = {};
         objectToStore[key] = value;
         return this.getStorage().set(objectToStore);
