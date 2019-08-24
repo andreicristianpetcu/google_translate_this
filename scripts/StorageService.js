@@ -12,19 +12,26 @@ class StorageService {
 
     static async getAlwaysTranslateStatus(url) {
         const domainData = await getDomainDataOrDefaults(domain); 
-        return domainData.shouldAlwaysTranslate;
+        return domainData.shouldTranslate;
     }
 
-    static async shouldAlwaysTranslate(domain) {
+    static async shouldTranslate(domain) {
         const domainData = await getDomainDataOrDefaults(domain); 
-        return domainData.shouldAlwaysTranslate;
+        return domainData.shouldTranslate;
     }
 
     static async toggleTranslateDomain(domain) {
         const domainData = await getDomainDataOrDefaults(domain);
-        domainData.shouldAlwaysTranslate = !domainData.shouldAlwaysTranslate
+        domainData.shouldTranslate = !domainData.shouldTranslate;
         await CachedStorageLocal.save(domain, domainData)
-        return domainData.shouldAlwaysTranslate;
+        return domainData.shouldTranslate;
+    }
+
+    static async setTranslateDomain(domain, newValue) {
+        const domainData = await getDomainDataOrDefaults(domain);
+        domainData.shouldTranslate = newValue;
+        await CachedStorageLocal.save(domain, domainData)
+        return domainData.shouldTranslate;
     }
 
     static async setHasCsp(domain) {
@@ -48,11 +55,14 @@ class StorageService {
         });
     }
 
+    static async getAlwaysTranslateMode(){
+        return CachedStorageLocal.getFromCacheStorageOrDefault("translationMode", "ALWAYS_DOMAIN");
+    }
 }
 
 async function getDomainDataOrDefaults(domain) {
     return CachedStorageLocal.getFromCacheStorageOrDefault(domain, {
-        shouldAlwaysTranslate: false,
+        shouldTranslate: false,
         hasCSP: false
     });
 }

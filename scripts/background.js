@@ -104,8 +104,8 @@ async function rewriteCSPHeader(e) {
       if (header.name.toLowerCase() === "content-security-policy") {
         const domain = getDomain(e.url);
         StorageService.setHasCsp(domain);
-        const shouldAlwaysTranslate = await StorageService.shouldAlwaysTranslate(domain);
-        if (shouldAlwaysTranslate) {
+        const shouldTranslate = await StorageService.shouldTranslate(domain);
+        if (shouldTranslate) {
           const parsedCsp = parseCsp(header.value);
           if (shouldModify(parsedCsp)) {
             const defaultSrc = parsedCsp['default-src'];
@@ -183,13 +183,18 @@ function isBasedOnHttp(url) {
 
 function translateTab(tabId) {
   browser.tabs.get(tabId).then(async function (tabInfo) {
-    if (isBasedOnHttp(tabInfo.url)) {
-      await StorageService.setLangCookie(tabInfo.url, tabInfo.cookieStoreId);
+    const url = tabInfo.url;
+    if (isBasedOnHttp(url)) {
+      await StorageService.setLangCookie(url, tabInfo.cookieStoreId);
     }
-    setTimeout(function () {
-      return browser.tabs.executeScript(tabId, {
+    setTimeout(async function () {
+      browser.tabs.executeScript(tabId, {
         file: 'scripts/inject_google_translate_content.js'
       });
+      const alwaysTranslateMode = await StorageService.getAlwaysTranslateMode();
+      if (alwaysTranslateMode === "ONCE_PAGE") {
+        StorageService.setTranslateDomain(new URL(url).host, false);
+      }
     }, 250);
   });
 }
@@ -201,7 +206,7 @@ async function updateMenuForDomain() {
   }, async function (foundTabs) {
     const tabId = foundTabs[0].id;
     const domain = getDomain(foundTabs[0].url);
-    const alwaysOrNever = await StorageService.shouldAlwaysTranslate(domain);
+    const alwaysOrNever = await StorageService.shouldTranslate(domain);
     const title = browser.i18n.getMessage("alwaysTranslate-" + !alwaysOrNever) + " " + domain;
     const visible = domain.length > 0;
     if (NOT_ANDROID) {
@@ -222,9 +227,13 @@ async function updateMenuForDomain() {
 }
 
 async function onComplete(e) {
-  const shouldAlwaysTranslate = await StorageService.shouldAlwaysTranslate(getDomain(e.url));
-  if (shouldAlwaysTranslate) {
+  const shouldTranslate = await StorageService.shouldTranslate(getDomain(e.url));
+  if (shouldTranslate) {
     translateTab(e.tabId);
+  }
+  const alwaysTranslateMode = await StorageService.getAlwaysTranslateMode();
+  if (alwaysTranslateMode === "ONCE_PAGE") {
+    StorageService.setTranslateDomain(new URL(url).host, false);
   }
 }
 
