@@ -1,3 +1,5 @@
+import StorageService from "./StorageService";
+
 const APPLICABLE_PROTOCOLS = ["http:", "https:"];
 
 const NOT_ANDROID = navigator.userAgent.toLocaleLowerCase().indexOf("android") === -1;

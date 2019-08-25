@@ -1,6 +1,6 @@
 const STORAGE_LANG_KEY = "langCookie";
 
-class StorageService {
+export default class StorageService {
 
     static async init() {
         browser.cookies.onChanged.addListener(function (changeInfo) {
