@@ -206,8 +206,14 @@ async function updateMenuForDomain() {
   }, async function (foundTabs) {
     const tabId = foundTabs[0].id;
     const domain = getDomain(foundTabs[0].url);
-    const alwaysOrNever = await StorageService.shouldTranslate(domain);
-    const title = browser.i18n.getMessage("alwaysTranslate-" + !alwaysOrNever) + " " + domain;
+    const alwaysTranslateMode = await StorageService.getAlwaysTranslateMode();
+    let title;
+    if(alwaysTranslateMode === "ALWAYS_DOMAIN"){
+      const alwaysOrNever = await StorageService.shouldTranslate(domain);
+      title = browser.i18n.getMessage("alwaysTranslate-" + !alwaysOrNever) + " " + domain;
+    } else {
+      title = browser.i18n.getMessage("translateCurrentPage");
+    }
     const visible = domain.length > 0;
     if (NOT_ANDROID) {
       browser.contextMenus.update("translate-current-page", {

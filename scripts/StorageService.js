@@ -5,7 +5,7 @@ class StorageService {
     static async init() {
         browser.cookies.onChanged.addListener(function (changeInfo) {
             if (changeInfo.cause === "overwrite" && changeInfo.cookie.name === "googtrans") {
-                CachedStorageLocal.save(STORAGE_LANG_KEY, { value: changeInfo.cookie.value });
+                LocalOrSyncStorage.save(STORAGE_LANG_KEY, { value: changeInfo.cookie.value });
             }
         });
     }
@@ -23,21 +23,21 @@ class StorageService {
     static async toggleTranslateDomain(domain) {
         const domainData = await getDomainDataOrDefaults(domain);
         domainData.shouldTranslate = !domainData.shouldTranslate;
-        await CachedStorageLocal.save(domain, domainData)
+        await LocalOrSyncStorage.save(domain, domainData)
         return domainData.shouldTranslate;
     }
 
     static async setTranslateDomain(domain, newValue) {
         const domainData = await getDomainDataOrDefaults(domain);
         domainData.shouldTranslate = newValue;
-        await CachedStorageLocal.save(domain, domainData)
+        await LocalOrSyncStorage.save(domain, domainData)
         return domainData.shouldTranslate;
     }
 
     static async setHasCsp(domain) {
         const domainData = await getDomainDataOrDefaults(domain);
         domainData.hasCSP = true;
-        await CachedStorageLocal.save(domain, domainData)
+        await LocalOrSyncStorage.save(domain, domainData)
     }
 
     static async hasCsp(domain) {
@@ -56,28 +56,28 @@ class StorageService {
     }
 
     static async getAlwaysTranslateMode(){
-        return CachedStorageLocal.getFromCacheStorageOrDefault("translationMode", "ALWAYS_DOMAIN");
+        return LocalOrSyncStorage.getFromCacheStorageOrDefault("translationMode", "ALWAYS_DOMAIN");
     }
 }
 
 async function getDomainDataOrDefaults(domain) {
-    return CachedStorageLocal.getFromCacheStorageOrDefault(domain, {
+    return LocalOrSyncStorage.getFromCacheStorageOrDefault(domain, {
         shouldTranslate: false,
         hasCSP: false
     });
 }
 
 async function getGoogtransCookie() {
-    return CachedStorageLocal.getFromCacheStorageOrDefault(STORAGE_LANG_KEY, "/auto/en");
+    return LocalOrSyncStorage.getFromCacheStorageOrDefault(STORAGE_LANG_KEY, "/auto/en");
 }
 
-class CachedStorageLocal {
+class LocalOrSyncStorage {
     static async getFromCacheStorageOrDefault(key, defaultValue) {
         let item = await this.getStorage().get(key);
         item = item[key];
         if (!item) {
             item = defaultValue;
-            CachedStorageLocal.save(key, item);
+            LocalOrSyncStorage.save(key, item);
         }
         return item;
     }
