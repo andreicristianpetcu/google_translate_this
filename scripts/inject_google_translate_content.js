@@ -17,8 +17,8 @@ globalFunctionScript.text = "googleTranslateElementInit = " + googleTranslateEle
 globalFunctionScript.type = "text/javascript";
 document.getElementsByTagName('head')[0].appendChild(globalFunctionScript);
 
-var gtScript = document.createElement('script');
-gtScript.type = "text/javascript";
-gtScript.src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-document.getElementsByTagName('head')[0].appendChild(gtScript);
+var bg_script = document.createElement('script');
+bg_script.type = "text/javascript";
+bg_script.src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+document.getElementsByTagName('head')[0].appendChild(bg_script);
 "Done loading";
