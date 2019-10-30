@@ -199,7 +199,20 @@ function translateTab(tabId) {
   });
 }
 
+let requestId = 0;
+function scheduleUpdateMenuForDomain() {
+  requestId++;
+  const lastRequestId = requestId;
+  setTimeout(() => {
+    // console.log(`Calling idle ${lastRequestId}`);
+    if (lastRequestId == requestId) {
+      updateMenuForDomain();
+    }
+  }, 600);
+}
+
 async function updateMenuForDomain() {
+  // console.log(`updateMenuForDomain ${requestId}`);
   browser.tabs.query({
     currentWindow: true,
     active: true
@@ -247,7 +260,7 @@ let lastSelectedTab = 0;
 function handleUpdated(tabId, changeInfo, tabInfo) {
   const isWindowFocusChange = changeInfo === undefined && tabInfo === undefined;
   if (isWindowFocusChange || changeInfo.url || lastSelectedTab !== tabId) {
-    updateMenuForDomain();
+    scheduleUpdateMenuForDomain();
   }
 }
 
@@ -304,7 +317,7 @@ class BrowserService {
   static reloadTab(currentTabId) {
     browser.tabs.executeScript(
       currentTabId, {
-        code: `window.location = window.location; ""`
-      });
+      code: `window.location = window.location; ""`
+    });
   }
 }
