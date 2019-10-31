@@ -204,15 +204,13 @@ function scheduleUpdateMenuForDomain() {
   requestId++;
   const lastRequestId = requestId;
   setTimeout(() => {
-    // console.log(`Calling idle ${lastRequestId}`);
     if (lastRequestId == requestId) {
       updateMenuForDomain();
     }
-  }, 600);
+  }, 1000);
 }
 
 async function updateMenuForDomain() {
-  // console.log(`updateMenuForDomain ${requestId}`);
   browser.tabs.query({
     currentWindow: true,
     active: true
