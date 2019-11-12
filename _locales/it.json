@@ -1,7 +1,7 @@
 {
   "appName": {
     "message": "Google Traduci Questa Pagina",
-    "description": "Il nome dell'applicazione"
+    "description": "The name of the application"
   },
   "appDescription": {
     "message": "Questa estensione Web traduce la pagina corrente con Google Translate. Lo fa su richiesta, quindi non cambia la pagina a meno che l'utente non l'abbia selezionato. È veloce, leggero e rispettoso della privacy. Puoi chiamare la traduzione con Maiusc+Alt+P!",
